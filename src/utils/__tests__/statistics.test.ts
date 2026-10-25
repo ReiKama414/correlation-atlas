@@ -10,6 +10,7 @@ import {
   computeDescriptiveStats,
   computeRanks,
 } from '../statistics';
+import { BENCHMARK_TEST_CASES } from '../../data/verificationBenchmarks';
 
 describe('Statistical Engine Benchmarks', () => {
   // Classic Anscombe's Quartet - Dataset I
@@ -49,23 +50,43 @@ describe('Statistical Engine Benchmarks', () => {
     expect(band.upper).toBeGreaterThan(band.fit);
   });
 
+  it('verifies all benchmark test cases in BENCHMARK_TEST_CASES', () => {
+    for (const tc of BENCHMARK_TEST_CASES) {
+      if (tc.id === 'nist-norris') {
+        const reg = calculateLinearRegression(tc.x, tc.y);
+        expect(reg.slope).toBeCloseTo(tc.expected.slope!, 3);
+        expect(reg.intercept).toBeCloseTo(tc.expected.intercept!, 2);
+      } else if (tc.id === 'anscombe-1') {
+        const p = calculatePearson(tc.x, tc.y);
+        expect(p.r).toBeCloseTo(tc.expected.r!, 3);
+      } else if (tc.id === 'spearman-tied') {
+        const s = calculateSpearman(tc.x, tc.y);
+        expect(s.r).toBeCloseTo(tc.expected.r!, 3);
+      } else if (tc.id === 'simpson-penguins') {
+        const groups = [
+          ...new Array(6).fill('Adelie'),
+          ...new Array(6).fill('Gentoo'),
+          ...new Array(6).fill('Chinstrap'),
+        ];
+        const res = detectSimpsonsParadox(tc.x, tc.y, groups);
+        expect(res.isDetected).toBe(true);
+      }
+    }
+  });
+
   it('correctly calculates Spearman rank correlation with ties', () => {
-    // Monotonic nonlinear test: Spearman must be 1.0 even if Pearson is < 1.0
     const x = [1, 2, 3, 4, 5, 6, 7, 8];
-    const yExp = x.map((v) => Math.exp(v)); // strictly increasing exponential
+    const yExp = x.map((v) => Math.exp(v));
 
     const spearmanExp = calculateSpearman(x, yExp);
     expect(spearmanExp.r).toBeCloseTo(1.0, 6);
 
-    // Check tie ranking
     const tiedArr = [10, 20, 20, 30, 40];
     const ranks = computeRanks(tiedArr);
-    // 10 -> 1, tied 20s (positions 2 and 3) -> 2.5, 30 -> 4, 40 -> 5
     expect(ranks).toEqual([1, 2.5, 2.5, 4, 5]);
   });
 
   it('detects outliers accurately with Cook Distance and IQR', () => {
-    // Normal line y = x, with one extreme outlier at index 4
     const x = [1, 2, 3, 4, 10, 6, 7, 8];
     const y = [1, 2, 3, 4, 50, 6, 7, 8];
 
@@ -77,10 +98,6 @@ describe('Statistical Engine Benchmarks', () => {
   });
 
   it('detects Simpson’s Paradox correctly', () => {
-    // Synthetic dataset:
-    // Group A: X in [10, 20], Y in [40, 50] (positive correlation within A)
-    // Group B: X in [50, 60], Y in [10, 20] (positive correlation within B)
-    // Combined: Overall trend is strongly negative!
     const groupAX = [10, 12, 14, 16, 18, 20];
     const groupAY = [40, 42, 44, 46, 48, 50];
     const groupBX = [50, 52, 54, 56, 58, 60];
