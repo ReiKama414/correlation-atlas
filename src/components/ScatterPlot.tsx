@@ -39,6 +39,7 @@ interface ScatterPlotProps {
   showPredictionBand: boolean;
   showResidualPlot: boolean;
   onOpenGuide: () => void;
+  isDark?: boolean;
 }
 
 interface PointData {
@@ -63,6 +64,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
   showConfidenceBand,
   showPredictionBand,
   showResidualPlot,
+  isDark = true,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -310,7 +312,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
     if (!containerRef.current) return;
     try {
       const dataUrl = await htmlToImage.toPng(containerRef.current, {
-        backgroundColor: '#0f172a',
+        backgroundColor: isDark ? '#0f172a' : '#ffffff',
         pixelRatio: 2,
       });
       const a = document.createElement('a');
@@ -328,7 +330,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
     if (!containerRef.current) return;
     try {
       const blob = await htmlToImage.toBlob(containerRef.current, {
-        backgroundColor: '#0f172a',
+        backgroundColor: isDark ? '#0f172a' : '#ffffff',
         pixelRatio: 2,
       });
       if (blob && navigator.clipboard && window.ClipboardItem) {
@@ -344,17 +346,17 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
   return (
     <div className="space-y-4">
       {/* Chart Header & Action Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               {showResidualPlot ? '殘差診斷分佈圖 (Residual Plot)' : '雙變數散佈圖與回歸線 (Scatter & OLS Regression)'}
             </h2>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30">
               {xVar} ➔ {yVar}
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             {showResidualPlot
               ? `診斷回歸等分散性 (Homoscedasticity) 與模型線性假設殘差分佈 (y - ŷ)`
               : `普通最小平方法 (OLS) 線性回歸擬合、判定係數 R² 與離群值影響度`}
@@ -364,28 +366,28 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={handleCopyImage}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium cursor-pointer transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-medium cursor-pointer transition-colors shadow-sm"
             title="複製圖表到剪貼簿"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />}
             <span>{copied ? '已複製！' : '複製圖片'}</span>
           </button>
 
           <button
             onClick={handleDownloadPNG}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium cursor-pointer transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-medium cursor-pointer transition-colors shadow-sm"
             title="下載高解析度 PNG 圖片"
           >
-            <Download className="w-3.5 h-3.5 text-indigo-400" />
+            <Download className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
             <span>PNG</span>
           </button>
 
           <button
             onClick={handleDownloadSVG}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium cursor-pointer transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-medium cursor-pointer transition-colors shadow-sm"
             title="下載無損向量 SVG 圖片"
           >
-            <Download className="w-3.5 h-3.5 text-emerald-400" />
+            <Download className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
             <span>SVG</span>
           </button>
         </div>
@@ -394,7 +396,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
       {/* Main Plot Area */}
       <div
         ref={containerRef}
-        className="relative bg-slate-950 p-4 sm:p-6 rounded-2xl border border-slate-800/80 shadow-inner overflow-hidden"
+        className="relative bg-slate-50 dark:bg-slate-950 p-4 sm:p-6 rounded-xl border border-slate-200 dark:border-slate-800/80 shadow-inner overflow-hidden"
       >
         <svg
           ref={svgRef}
@@ -426,7 +428,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
                   y1={padding.top}
                   x2={xPos}
                   y2={height - padding.bottom}
-                  stroke="#334155"
+                  stroke={isDark ? '#334155' : '#e2e8f0'}
                   strokeWidth="1"
                   strokeDasharray="4 4"
                   opacity="0.6"
@@ -434,7 +436,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
                 <text
                   x={xPos}
                   y={height - padding.bottom + 18}
-                  fill="#94a3b8"
+                  fill={isDark ? '#94a3b8' : '#64748b'}
                   fontSize="11"
                   fontFamily="ui-monospace, monospace"
                   textAnchor="middle"
@@ -454,7 +456,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
                   y1={yPos}
                   x2={width - padding.right}
                   y2={yPos}
-                  stroke="#334155"
+                  stroke={isDark ? '#334155' : '#e2e8f0'}
                   strokeWidth="1"
                   strokeDasharray="4 4"
                   opacity="0.6"
@@ -462,7 +464,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
                 <text
                   x={padding.left - 12}
                   y={yPos + 4}
-                  fill="#94a3b8"
+                  fill={isDark ? '#94a3b8' : '#64748b'}
                   fontSize="11"
                   fontFamily="ui-monospace, monospace"
                   textAnchor="end"
@@ -479,7 +481,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
             y1={height - padding.bottom}
             x2={width - padding.right}
             y2={height - padding.bottom}
-            stroke="#64748b"
+            stroke={isDark ? '#64748b' : '#94a3b8'}
             strokeWidth="1.5"
           />
           <line
@@ -487,7 +489,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
             y1={padding.top}
             x2={padding.left}
             y2={height - padding.bottom}
-            stroke="#64748b"
+            stroke={isDark ? '#64748b' : '#94a3b8'}
             strokeWidth="1.5"
           />
 
@@ -498,7 +500,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
               y1={scaleY(0)}
               x2={width - padding.right}
               y2={scaleY(0)}
-              stroke="#e2e8f0"
+              stroke={isDark ? '#e2e8f0' : '#475569'}
               strokeWidth="1.5"
               strokeDasharray="5 5"
             />
@@ -611,7 +613,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
           <text
             x={width / 2}
             y={height - 12}
-            fill="#e2e8f0"
+            fill={isDark ? '#e2e8f0' : '#1e293b'}
             fontSize="12"
             fontWeight="600"
             textAnchor="middle"
@@ -621,7 +623,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
           <text
             x={-(height / 2)}
             y={22}
-            fill="#e2e8f0"
+            fill={isDark ? '#e2e8f0' : '#1e293b'}
             fontSize="12"
             fontWeight="600"
             textAnchor="middle"
@@ -634,14 +636,14 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
         {/* Hover Point Floating Tooltip */}
         {hoveredPoint && (
           <div
-            className="absolute z-20 pointer-events-none bg-slate-900/95 border border-slate-700/80 p-3 rounded-xl shadow-2xl text-xs text-slate-200 backdrop-blur-md"
+            className="absolute z-20 pointer-events-none bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-700/80 p-3 rounded-xl shadow-2xl text-xs text-slate-800 dark:text-slate-200 backdrop-blur-md"
             style={{
               left: `${Math.min(width - 220, Math.max(20, scaleX(hoveredPoint.x) - 100))}px`,
               top: `${Math.max(10, scaleY(showResidualPlot ? hoveredPoint.residual : hoveredPoint.y) - 95)}px`,
             }}
           >
-            <div className="flex items-center justify-between gap-3 border-b border-slate-800 pb-1.5 mb-1.5">
-              <span className="font-bold text-white">樣本 #{hoveredPoint.index + 1}</span>
+            <div className="flex items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-1.5 mb-1.5">
+              <span className="font-bold text-slate-900 dark:text-white">樣本 #{hoveredPoint.index + 1}</span>
               {groupVar && (
                 <span
                   className="px-2 py-0.5 rounded text-[10px] font-semibold text-white"
@@ -654,27 +656,27 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
 
             <div className="grid grid-cols-2 gap-x-3 gap-y-1 font-mono text-[11px]">
               <div>
-                <span className="text-slate-400">{xVar}:</span>{' '}
-                <strong className="text-indigo-300">{hoveredPoint.x}</strong>
+                <span className="text-slate-500 dark:text-slate-400">{xVar}:</span>{' '}
+                <strong className="text-indigo-600 dark:text-indigo-300">{hoveredPoint.x}</strong>
               </div>
               <div>
-                <span className="text-slate-400">{yVar}:</span>{' '}
-                <strong className="text-indigo-300">{hoveredPoint.y}</strong>
+                <span className="text-slate-500 dark:text-slate-400">{yVar}:</span>{' '}
+                <strong className="text-indigo-600 dark:text-indigo-300">{hoveredPoint.y}</strong>
               </div>
               <div>
-                <span className="text-slate-400">回歸預測 ŷ:</span>{' '}
-                <span>{formatNumber(regression.predict(hoveredPoint.x), 2)}</span>
+                <span className="text-slate-500 dark:text-slate-400">回歸預測 ŷ:</span>{' '}
+                <span className="text-slate-700 dark:text-slate-300">{formatNumber(regression.predict(hoveredPoint.x), 2)}</span>
               </div>
               <div>
-                <span className="text-slate-400">殘差:</span>{' '}
-                <span className={hoveredPoint.residual > 0 ? 'text-emerald-400' : 'text-rose-400'}>
+                <span className="text-slate-500 dark:text-slate-400">殘差:</span>{' '}
+                <span className={hoveredPoint.residual > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}>
                   {formatNumber(hoveredPoint.residual, 2)}
                 </span>
               </div>
             </div>
 
             {hoveredPoint.isOutlier && (
-              <div className="mt-2 pt-1 border-t border-rose-900/50 text-[10px] text-rose-300 font-semibold flex items-center justify-between">
+              <div className="mt-2 pt-1 border-t border-rose-200 dark:border-rose-900/50 text-[10px] text-rose-600 dark:text-rose-300 font-semibold flex items-center justify-between">
                 <span>⚠️ 檢出為離群值 ({outlierMethod.toUpperCase()})</span>
                 <span className="font-mono">分數: {formatNumber(hoveredPoint.outlierScore, 2)}</span>
               </div>
@@ -683,14 +685,14 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
         )}
 
         {/* Legend in corner */}
-        <div className="absolute top-6 right-6 bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs space-y-1.5 backdrop-blur-md shadow-lg max-w-[200px]">
-          <div className="font-semibold text-slate-300 text-[11px] mb-1">圖例說明</div>
+        <div className="absolute top-6 right-6 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs space-y-1.5 backdrop-blur-md shadow-lg max-w-[200px]">
+          <div className="font-semibold text-slate-700 dark:text-slate-300 text-[11px] mb-1">圖例說明</div>
 
           {/* Regression Line Legend */}
           {!showResidualPlot && (
             <div className="flex items-center gap-2 text-[11px]">
               <span className="w-4 h-1 bg-indigo-500 rounded-full shrink-0"></span>
-              <span className="text-slate-300">總體線性回歸</span>
+              <span className="text-slate-600 dark:text-slate-300">總體線性回歸</span>
             </div>
           )}
 
@@ -702,14 +704,14 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
                   className="w-2.5 h-2.5 rounded-full shrink-0"
                   style={{ backgroundColor: groupColorMap.get(grp) || '#3b82f6' }}
                 ></span>
-                <span className="text-slate-300 truncate">{grp}</span>
+                <span className="text-slate-600 dark:text-slate-300 truncate">{grp}</span>
               </div>
             ))}
 
           {/* Outliers */}
-          <div className="flex items-center gap-2 text-[11px] pt-1 border-t border-slate-800">
+          <div className="flex items-center gap-2 text-[11px] pt-1 border-t border-slate-200 dark:border-slate-800">
             <span className="w-2.5 h-2.5 rounded-full border border-rose-500 bg-rose-500/20 shrink-0"></span>
-            <span className="text-rose-300">
+            <span className="text-rose-600 dark:text-rose-300">
               {outlierResult.indices.size} 筆離群點 {excludeOutliers ? '(已剔除)' : ''}
             </span>
           </div>
@@ -719,12 +721,12 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
       {/* Regression & Correlation Statistical Metric Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {/* Metric 1: Correlation Coefficient */}
-        <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1">
-          <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
             <span>{correlationMethod === 'spearman' ? 'Spearman (ρ)' : 'Pearson (r)'}</span>
-            <Activity className="w-3.5 h-3.5 text-indigo-400" />
+            <Activity className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
           </div>
-          <div className="text-xl font-bold font-mono text-white">
+          <div className="text-xl font-bold font-mono text-slate-900 dark:text-white">
             {formatNumber(activeCorrelation.r, 3)}
           </div>
           <div className="text-[10px] text-slate-500">
@@ -737,12 +739,12 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
         </div>
 
         {/* Metric 2: R-Squared */}
-        <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1">
-          <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
             <span>判定係數 (R²)</span>
-            <TrendingUp className="w-3.5 h-3.5 text-indigo-400" />
+            <TrendingUp className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
           </div>
-          <div className="text-xl font-bold font-mono text-indigo-300">
+          <div className="text-xl font-bold font-mono text-indigo-600 dark:text-indigo-300">
             {formatNumber(regression.rSquared, 3)}
           </div>
           <div className="text-[10px] text-slate-500">
@@ -751,12 +753,12 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
         </div>
 
         {/* Metric 3: P-Value */}
-        <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1">
-          <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
             <span>顯著性 p-value</span>
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
           </div>
-          <div className="text-sm font-bold font-mono text-white mt-1">
+          <div className="text-sm font-bold font-mono text-slate-900 dark:text-white mt-1">
             {formatPValue(activeCorrelation.pValue)}
           </div>
           <div className="text-[10px] text-slate-500 font-mono">
@@ -765,11 +767,11 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
         </div>
 
         {/* Metric 4: Regression Equation */}
-        <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1 col-span-2 sm:col-span-1 lg:col-span-2">
-          <div className="text-[11px] text-slate-400 font-medium">
+        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 col-span-2 sm:col-span-1 lg:col-span-2 shadow-sm">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
             回歸方程式 (OLS Equation)
           </div>
-          <div className="text-xs sm:text-sm font-bold font-mono text-emerald-400 truncate">
+          <div className="text-xs sm:text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400 truncate">
             Y = {formatNumber(regression.slope, 3)} · X {regression.intercept >= 0 ? '+' : '-'} {formatNumber(Math.abs(regression.intercept), 3)}
           </div>
           <div className="text-[10px] text-slate-500 font-mono">
@@ -778,9 +780,9 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
         </div>
 
         {/* Metric 5: 95% CI for r */}
-        <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1">
-          <div className="text-[11px] text-slate-400 font-medium">95% 信賴區間</div>
-          <div className="text-xs font-bold font-mono text-slate-200">
+        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">95% 信賴區間</div>
+          <div className="text-xs font-bold font-mono text-slate-800 dark:text-slate-200">
             [{formatNumber(activeCorrelation.ci95[0], 3)}, {formatNumber(activeCorrelation.ci95[1], 3)}]
           </div>
           <div className="text-[10px] text-slate-500">
@@ -791,24 +793,24 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
 
       {/* Group Comparison Table (if grouping active) */}
       {groupVar && groupRegressions.length > 0 && (
-        <div className="bg-slate-900 rounded-2xl border border-slate-800 p-4 space-y-3">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Layers className="w-4 h-4 text-indigo-400" />
-              <h3 className="font-semibold text-white text-sm">
+              <Layers className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+              <h3 className="font-semibold text-slate-900 dark:text-white text-sm">
                 分組統計比較 ({groupVar})
               </h3>
             </div>
             {simpsonsParadox.isDetected && (
-              <span className="flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-semibold">
-                <Flame className="w-3 h-3 text-rose-400" /> 警示：辛普森悖論 (Simpson's Paradox)
+              <span className="flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30 font-semibold">
+                <Flame className="w-3 h-3 text-rose-500 dark:text-rose-400" /> 警示：辛普森悖論 (Simpson's Paradox)
               </span>
             )}
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
-              <thead className="bg-slate-800/60 text-slate-400 font-medium">
+              <thead className="bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 font-medium">
                 <tr>
                   <th className="py-2 px-3 rounded-l-lg">分組 (Group)</th>
                   <th className="py-2 px-3">樣本數 (n)</th>
@@ -819,30 +821,30 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
                   <th className="py-2 px-3 rounded-r-lg">顯著性 (p-value)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {groupRegressions.map((gr) => (
-                  <tr key={`gr-row-${gr.group}`} className="hover:bg-slate-800/40">
+                  <tr key={`gr-row-${gr.group}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
                     <td className="py-2.5 px-3 font-semibold flex items-center gap-2">
                       <span
                         className="w-2.5 h-2.5 rounded-full"
                         style={{ backgroundColor: gr.color }}
                       ></span>
-                      <span className="text-white">{gr.group}</span>
+                      <span className="text-slate-900 dark:text-white">{gr.group}</span>
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-slate-300">{gr.count}</td>
-                    <td className="py-2.5 px-3 font-mono font-bold text-indigo-300">
+                    <td className="py-2.5 px-3 font-mono text-slate-700 dark:text-slate-300">{gr.count}</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-indigo-600 dark:text-indigo-300">
                       {formatNumber(gr.correlation.r, 3)}
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-slate-300">
+                    <td className="py-2.5 px-3 font-mono text-slate-700 dark:text-slate-300">
                       {formatNumber(gr.regression.rSquared, 3)}
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-emerald-400">
+                    <td className="py-2.5 px-3 font-mono text-emerald-600 dark:text-emerald-400">
                       {formatNumber(gr.regression.slope, 3)}
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-slate-300">
+                    <td className="py-2.5 px-3 font-mono text-slate-700 dark:text-slate-300">
                       {formatNumber(gr.regression.intercept, 3)}
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-slate-300">
+                    <td className="py-2.5 px-3 font-mono text-slate-700 dark:text-slate-300">
                       {formatPValue(gr.correlation.pValue)}
                     </td>
                   </tr>

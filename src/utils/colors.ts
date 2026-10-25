@@ -20,68 +20,72 @@ export function getGroupColor(index: number): string {
 }
 
 /**
- * Maps correlation coefficient r in [-1, 1] to diverging color
+ * Maps correlation coefficient r in [-1, 1] to diverging color with Light/Dark contrast adaptation
  */
 export function getCorrelationColor(
   r: number,
-  theme: 'coolwarm' | 'emerald' | 'viridis' | 'sunset' = 'coolwarm'
+  theme: 'coolwarm' | 'emerald' | 'viridis' | 'sunset' = 'coolwarm',
+  isDark: boolean = true
 ): { bg: string; text: string } {
   // Clamp r
   const clamped = Math.max(-1, Math.min(1, r));
+  const neutralR = isDark ? 30 : 248;
+  const neutralG = isDark ? 41 : 250;
+  const neutralB = isDark ? 59 : 252;
 
   if (theme === 'coolwarm') {
-    // -1: Deep Blue (rgb(37, 99, 235)) -> 0: White (rgb(255, 255, 255)) -> +1: Deep Rose/Red (rgb(225, 29, 72))
+    // Negative: Blue (#2563eb) -> Neutral -> Positive: Rose/Red (#e11d48)
     if (clamped < 0) {
       const t = Math.abs(clamped);
-      const rVal = Math.round(255 - t * (255 - 37));
-      const gVal = Math.round(255 - t * (255 - 99));
-      const bVal = Math.round(255 - t * (255 - 235));
-      const text = t > 0.45 ? '#ffffff' : '#1e293b';
+      const rVal = Math.round(neutralR - t * (neutralR - 37));
+      const gVal = Math.round(neutralG - t * (neutralG - 99));
+      const bVal = Math.round(neutralB - t * (neutralB - 235));
+      const text = t > 0.45 ? '#ffffff' : isDark ? '#e2e8f0' : '#0f172a';
       return { bg: `rgb(${rVal}, ${gVal}, ${bVal})`, text };
     } else {
       const t = clamped;
-      const rVal = Math.round(255 - t * (255 - 225));
-      const gVal = Math.round(255 - t * (255 - 29));
-      const bVal = Math.round(255 - t * (255 - 72));
-      const text = t > 0.45 ? '#ffffff' : '#1e293b';
+      const rVal = Math.round(neutralR - t * (neutralR - 225));
+      const gVal = Math.round(neutralG - t * (neutralG - 29));
+      const bVal = Math.round(neutralB - t * (neutralB - 72));
+      const text = t > 0.45 ? '#ffffff' : isDark ? '#e2e8f0' : '#0f172a';
       return { bg: `rgb(${rVal}, ${gVal}, ${bVal})`, text };
     }
   }
 
   if (theme === 'emerald') {
-    // -1: Purple (rgb(147, 51, 234)) -> 0: White -> +1: Emerald (rgb(16, 185, 129))
+    // Negative: Purple (#9333ea) -> Neutral -> Positive: Emerald (#10b981)
     if (clamped < 0) {
       const t = Math.abs(clamped);
-      const rVal = Math.round(255 - t * (255 - 147));
-      const gVal = Math.round(255 - t * (255 - 51));
-      const bVal = Math.round(255 - t * (255 - 234));
-      const text = t > 0.45 ? '#ffffff' : '#1e293b';
+      const rVal = Math.round(neutralR - t * (neutralR - 147));
+      const gVal = Math.round(neutralG - t * (neutralG - 51));
+      const bVal = Math.round(neutralB - t * (neutralB - 234));
+      const text = t > 0.45 ? '#ffffff' : isDark ? '#e2e8f0' : '#0f172a';
       return { bg: `rgb(${rVal}, ${gVal}, ${bVal})`, text };
     } else {
       const t = clamped;
-      const rVal = Math.round(255 - t * (255 - 16));
-      const gVal = Math.round(255 - t * (255 - 185));
-      const bVal = Math.round(255 - t * (255 - 129));
-      const text = t > 0.45 ? '#ffffff' : '#1e293b';
+      const rVal = Math.round(neutralR - t * (neutralR - 16));
+      const gVal = Math.round(neutralG - t * (neutralG - 185));
+      const bVal = Math.round(neutralB - t * (neutralB - 129));
+      const text = t > 0.45 ? '#ffffff' : isDark ? '#e2e8f0' : '#0f172a';
       return { bg: `rgb(${rVal}, ${gVal}, ${bVal})`, text };
     }
   }
 
   if (theme === 'sunset') {
-    // -1: Deep Indigo (rgb(67, 56, 202)) -> 0: White -> +1: Amber Orange (rgb(234, 88, 12))
+    // Negative: Indigo (#4338ca) -> Neutral -> Positive: Orange (#ea580c)
     if (clamped < 0) {
       const t = Math.abs(clamped);
-      const rVal = Math.round(255 - t * (255 - 67));
-      const gVal = Math.round(255 - t * (255 - 56));
-      const bVal = Math.round(255 - t * (255 - 202));
-      const text = t > 0.45 ? '#ffffff' : '#1e293b';
+      const rVal = Math.round(neutralR - t * (neutralR - 67));
+      const gVal = Math.round(neutralG - t * (neutralG - 56));
+      const bVal = Math.round(neutralB - t * (neutralB - 202));
+      const text = t > 0.45 ? '#ffffff' : isDark ? '#e2e8f0' : '#0f172a';
       return { bg: `rgb(${rVal}, ${gVal}, ${bVal})`, text };
     } else {
       const t = clamped;
-      const rVal = Math.round(255 - t * (255 - 234));
-      const gVal = Math.round(255 - t * (255 - 88));
-      const bVal = Math.round(255 - t * (255 - 12));
-      const text = t > 0.45 ? '#ffffff' : '#1e293b';
+      const rVal = Math.round(neutralR - t * (neutralR - 234));
+      const gVal = Math.round(neutralG - t * (neutralG - 88));
+      const bVal = Math.round(neutralB - t * (neutralB - 12));
+      const text = t > 0.45 ? '#ffffff' : isDark ? '#e2e8f0' : '#0f172a';
       return { bg: `rgb(${rVal}, ${gVal}, ${bVal})`, text };
     }
   }
@@ -91,7 +95,7 @@ export function getCorrelationColor(
   const rVal = Math.round(68 + norm * (253 - 68));
   const gVal = Math.round(1 + norm * (231 - 1));
   const bVal = Math.round(84 + norm * (37 - 84));
-  const text = norm > 0.3 && norm < 0.8 ? '#ffffff' : '#0f172a';
+  const text = norm > 0.3 && norm < 0.8 ? '#ffffff' : isDark ? '#f1f5f9' : '#0f172a';
   return { bg: `rgb(${rVal}, ${gVal}, ${bVal})`, text };
 }
 

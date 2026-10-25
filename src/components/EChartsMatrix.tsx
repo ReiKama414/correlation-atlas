@@ -25,6 +25,7 @@ interface EChartsMatrixProps {
   onSelectPair: (xVar: string, yVar: string) => void;
   activeColorTheme: 'coolwarm' | 'emerald' | 'viridis' | 'sunset';
   onChangeColorTheme: (theme: 'coolwarm' | 'emerald' | 'viridis' | 'sunset') => void;
+  isDark?: boolean;
 }
 
 export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
@@ -37,6 +38,7 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
   onSelectPair,
   activeColorTheme,
   onChangeColorTheme,
+  isDark = true,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.EChartsType | null>(null);
@@ -107,12 +109,20 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
     }
   }, [activeColorTheme]);
 
+  // Recreate chart instance when isDark changes
+  useEffect(() => {
+    if (chartInstance.current) {
+      chartInstance.current.dispose();
+      chartInstance.current = null;
+    }
+  }, [isDark]);
+
   // Initialize and update ECharts
   useEffect(() => {
     if (!chartRef.current) return;
 
     if (!chartInstance.current) {
-      chartInstance.current = echarts.init(chartRef.current, 'dark', {
+      chartInstance.current = echarts.init(chartRef.current, isDark ? 'dark' : undefined, {
         renderer: 'canvas',
       });
 
@@ -138,21 +148,21 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
     const chart = chartInstance.current;
 
     const option: echarts.EChartsOption = {
-      backgroundColor: '#090d16',
+      backgroundColor: isDark ? '#090d16' : '#ffffff',
       tooltip: {
         position: 'top',
-        backgroundColor: '#0f172a',
-        borderColor: '#334155',
+        backgroundColor: isDark ? '#0f172a' : '#ffffff',
+        borderColor: isDark ? '#334155' : '#cbd5e1',
         borderWidth: 1,
-        textStyle: { color: '#f1f5f9', fontSize: 11 },
+        textStyle: { color: isDark ? '#f1f5f9' : '#0f172a', fontSize: 11 },
         formatter: (params: unknown) => {
           const item = params as { data: { value: [number, number, number]; cell: MatrixCell } };
           const cell = item.data?.cell;
           if (!cell) return '';
           return `
             <div style="font-family: monospace; line-height: 1.5;">
-              <strong style="color: #ffffff;">${cell.xVar} × ${cell.yVar}</strong><br/>
-              相關係數 r: <span style="color: #818cf8; font-weight: bold;">${cell.r.toFixed(4)}</span><br/>
+              <strong style="color: ${isDark ? '#ffffff' : '#0f172a'};">${cell.xVar} × ${cell.yVar}</strong><br/>
+              相關係數 r: <span style="color: #6366f1; font-weight: bold;">${cell.r.toFixed(4)}</span><br/>
               判定係數 R²: ${cell.rSquared.toFixed(4)}<br/>
               p-value: ${formatPValue(cell.pValue)}<br/>
               有效樣本 n: ${cell.n}<br/>
@@ -174,11 +184,11 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
         axisLabel: {
           interval: 0,
           rotate: 35,
-          color: '#cbd5e1',
+          color: isDark ? '#cbd5e1' : '#475569',
           fontFamily: 'monospace',
           fontSize: 10,
         },
-        axisLine: { lineStyle: { color: '#334155' } },
+        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
       },
       yAxis: {
         type: 'category',
@@ -186,11 +196,11 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
         splitArea: { show: true },
         axisLabel: {
           interval: 0,
-          color: '#cbd5e1',
+          color: isDark ? '#cbd5e1' : '#475569',
           fontFamily: 'monospace',
           fontSize: 10,
         },
-        axisLine: { lineStyle: { color: '#334155' } },
+        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
       },
       visualMap: {
         min: -1,
@@ -203,7 +213,7 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
           color: themeColors,
         },
         textStyle: {
-          color: '#94a3b8',
+          color: isDark ? '#94a3b8' : '#64748b',
           fontSize: 10,
           fontFamily: 'monospace',
         },
@@ -213,9 +223,13 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
         bottom: 10,
         itemSize: 12,
         feature: {
-          saveAsImage: { title: '下載矩陣圖片', pixelRatio: 2, backgroundColor: '#090d16' },
+          saveAsImage: {
+            title: '下載矩陣圖片',
+            pixelRatio: 2,
+            backgroundColor: isDark ? '#090d16' : '#ffffff',
+          },
         },
-        iconStyle: { borderColor: '#64748b' },
+        iconStyle: { borderColor: isDark ? '#64748b' : '#94a3b8' },
       },
       series: [
         {
@@ -263,6 +277,7 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
     heatmapData,
     themeColors,
     onSelectPair,
+    isDark,
   ]);
 
   const handleExportCSV = () => {
@@ -282,7 +297,7 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
     const url = chartInstance.current.getDataURL({
       type: 'png',
       pixelRatio: 2,
-      backgroundColor: '#090d16',
+      backgroundColor: isDark ? '#090d16' : '#ffffff',
     });
     const a = document.createElement('a');
     a.href = url;
@@ -295,17 +310,17 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
   return (
     <div className="space-y-3">
       {/* Controls Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-semibold text-slate-100 text-sm">
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
               ECharts 相關係數矩陣熱圖 ({correlationMethod === 'spearman' ? 'Spearman ρ' : 'Pearson r'})
             </h2>
-            <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-indigo-900/40 text-indigo-300 border border-indigo-700/50">
+            <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50">
               {orderedVariables.length} × {orderedVariables.length} 維度
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5">
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
             點擊任一熱圖方格可立即指定為 X/Y 軸切換至散佈圖分析視圖
           </p>
         </div>
@@ -316,7 +331,7 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
             value={correlationMethod}
             onChange={(e) => onChangeCorrelationMethod(e.target.value as CorrelationMethod)}
             aria-label="選擇相關係數類型"
-            className="bg-slate-800 text-slate-200 border border-slate-700 rounded px-2 py-1 text-xs cursor-pointer"
+            className="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded px-2 py-1 text-xs cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="pearson">Pearson (r)</option>
             <option value="spearman">Spearman (ρ)</option>
@@ -327,7 +342,7 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
             value={deletionMethod}
             onChange={(e) => onChangeDeletionMethod(e.target.value as DeletionMethod)}
             aria-label="選擇缺失值刪除機制"
-            className="bg-slate-800 text-slate-200 border border-slate-700 rounded px-2 py-1 text-xs cursor-pointer"
+            className="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded px-2 py-1 text-xs cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="pairwise">成對刪除 (Pairwise)</option>
             <option value="listwise">整列刪除 (Listwise)</option>
@@ -338,7 +353,7 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
             value={displayMode}
             onChange={(e) => setDisplayMode(e.target.value as MatrixDisplayMode)}
             aria-label="選擇矩陣顯示模式"
-            className="bg-slate-800 text-slate-200 border border-slate-700 rounded px-2 py-1 text-xs cursor-pointer"
+            className="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded px-2 py-1 text-xs cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="full">全對稱矩陣</option>
             <option value="lower">下三角 (Lower)</option>
@@ -350,7 +365,7 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
             value={orderMode}
             onChange={(e) => setOrderMode(e.target.value as MatrixOrder)}
             aria-label="選擇矩陣排序規則"
-            className="bg-slate-800 text-slate-200 border border-slate-700 rounded px-2 py-1 text-xs cursor-pointer"
+            className="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded px-2 py-1 text-xs cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="original">原始順序</option>
             <option value="seriated">分群關聯排序</option>
@@ -364,7 +379,7 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
               onChangeColorTheme(e.target.value as 'coolwarm' | 'emerald' | 'viridis' | 'sunset')
             }
             aria-label="選擇色階調色盤"
-            className="bg-slate-800 text-slate-200 border border-slate-700 rounded px-2 py-1 text-xs cursor-pointer"
+            className="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded px-2 py-1 text-xs cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="coolwarm">藍白紅 (Cool-Warm)</option>
             <option value="emerald">紫白綠 (Emerald)</option>
@@ -375,59 +390,59 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
           {/* Downloads */}
           <button
             onClick={handleDownloadPNG}
-            className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded text-xs cursor-pointer"
+            className="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 px-2.5 py-1 rounded text-xs cursor-pointer transition-colors"
             title="下載 PNG"
           >
-            <Download className="w-3.5 h-3.5 text-indigo-400" />
+            <Download className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
             <span>PNG</span>
           </button>
 
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded text-xs cursor-pointer"
+            className="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 px-2.5 py-1 rounded text-xs cursor-pointer transition-colors"
             title="下載 CSV"
           >
-            <Download className="w-3.5 h-3.5 text-emerald-400" />
+            <Download className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
             <span>CSV</span>
           </button>
         </div>
       </div>
 
       {/* Main ECharts Heatmap Container */}
-      <div className="bg-slate-950 border border-slate-800 rounded-lg p-2 overflow-hidden shadow-inner">
+      <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2 overflow-hidden shadow-inner">
         <div ref={chartRef} className="w-full h-[480px]" />
       </div>
 
       {/* Hovered Cell Detail Card */}
       {hoveredCell && (
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs flex flex-wrap items-center justify-between gap-3">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs flex flex-wrap items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-2">
-            <span className="text-slate-400">目前選取變數對：</span>
-            <strong className="text-white font-mono">
+            <span className="text-slate-500 dark:text-slate-400">目前選取變數對：</span>
+            <strong className="text-slate-900 dark:text-white font-mono">
               {hoveredCell.xVar} × {hoveredCell.yVar}
             </strong>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 font-mono text-[11px]">
             <div>
-              <span className="text-slate-400">r:</span>{' '}
-              <strong className="text-indigo-400">{formatNumber(hoveredCell.r, 4)}</strong>
+              <span className="text-slate-500 dark:text-slate-400">r:</span>{' '}
+              <strong className="text-indigo-600 dark:text-indigo-400">{formatNumber(hoveredCell.r, 4)}</strong>
             </div>
             <div>
-              <span className="text-slate-400">R²:</span>{' '}
-              <strong className="text-slate-200">{formatNumber(hoveredCell.rSquared, 4)}</strong>
+              <span className="text-slate-500 dark:text-slate-400">R²:</span>{' '}
+              <strong className="text-slate-800 dark:text-slate-200">{formatNumber(hoveredCell.rSquared, 4)}</strong>
             </div>
             <div>
-              <span className="text-slate-400">p:</span>{' '}
-              <strong className="text-slate-200">{formatPValue(hoveredCell.pValue)}</strong>
+              <span className="text-slate-500 dark:text-slate-400">p:</span>{' '}
+              <strong className="text-slate-800 dark:text-slate-200">{formatPValue(hoveredCell.pValue)}</strong>
             </div>
             <div>
-              <span className="text-slate-400">n:</span>{' '}
-              <strong className="text-emerald-400">{hoveredCell.n}</strong>
+              <span className="text-slate-500 dark:text-slate-400">n:</span>{' '}
+              <strong className="text-emerald-600 dark:text-emerald-400">{hoveredCell.n}</strong>
             </div>
             <div>
-              <span className="text-slate-400">95% CI:</span>{' '}
-              <strong className="text-slate-200">
+              <span className="text-slate-500 dark:text-slate-400">95% CI:</span>{' '}
+              <strong className="text-slate-800 dark:text-slate-200">
                 [{formatNumber(hoveredCell.ci95[0], 3)}, {formatNumber(hoveredCell.ci95[1], 3)}]
               </strong>
             </div>

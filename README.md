@@ -50,15 +50,26 @@
 
 ---
 
+### 7. 📱 響應式佈局 (RWD) 與黑白雙主題 (Dual-Theme)
+- **9 大 Viewport 完整驗證**：320px、375px、390px、430px (手機)、768px (平板直向)、1024px (平板橫向)、1280px (筆電)、1440px (桌面)、1920px (大型螢幕)。
+- **絕對零跑版保證**：全頁面無非預期橫向捲軸 (`scrollWidth <= innerWidth`)，表格與圖表具備獨立響應容器。
+- **手機版抽屜式導覽 (Mobile Drawer)**：窄螢幕 (< 1024px) 參數面板自動轉為觸控優化抽屜，確保圖表分析主視覺完整呈現。
+- **System / Light / Dark 雙主題**：
+  - 預設跟隨作業系統 `prefers-color-scheme` 即時切換。
+  - 支援手動鎖定 Light 或 Dark 模式並持久化於 `localStorage`。
+  - 圖表、熱圖、軸線、工具提示與卡片色彩皆無縫適應黑白雙模式。
+
+---
+
 ## 🛠️ 技術棧 (Tech Stack)
 
 - **前端核心**：React 19 + TypeScript
 - **建置工具**：Vite 8
 - **圖表引擎**：Apache ECharts 6 + 原生 SVG 雙引擎
 - **本地儲存**：IndexedDB (`idb` v8)
-- **樣式系統**：Tailwind CSS v4 (專業工作台 Slate 主題)
+- **樣式系統**：Tailwind CSS v4 (專業黑白/Slate雙主題)
 - **單元測試**：Vitest 5 (11 項統計與解析測試全部通過)
-- **端到端測試**：Playwright 1.64 (5 項主要互動流程全部通過)
+- **端到端測試**：Playwright 1.64 (14 項主要流程與 9 Viewport RWD/主題切換測試全部通過)
 
 ---
 

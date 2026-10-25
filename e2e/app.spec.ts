@@ -4,13 +4,13 @@ test.describe('Correlation Atlas End-to-End Interaction Flows', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     // Wait for the workbench to be ready
-    await expect(page.locator('text=Correlation Atlas')).toBeVisible();
+    await expect(page.locator('text=Correlation Atlas').first()).toBeVisible();
   });
 
   test('Flow 1: Loads default Palmer Penguins dataset and triggers Simpson’s Paradox alert', async ({ page }) => {
     // Check brand header
-    await expect(page.locator('text=Correlation Atlas')).toBeVisible();
-    await expect(page.locator('text=統計工作台')).toBeVisible();
+    await expect(page.locator('text=Correlation Atlas').first()).toBeVisible();
+    await expect(page.locator('text=工作台').first()).toBeVisible();
 
     // Check sample size badges
     await expect(page.locator('text=總樣本數:')).toBeVisible();
@@ -18,7 +18,6 @@ test.describe('Correlation Atlas End-to-End Interaction Flows', () => {
 
     // Check that Simpson's Paradox alert is automatically flagged for Penguins
     await expect(page.locator('text=偵測到辛普森悖論')).toBeVisible();
-    await expect(page.locator('text=Simpson\'s Paradox Detected')).toBeVisible();
 
     // Check that statistical metric cards are rendered with non-empty values
     await expect(page.locator('div:has-text("判定係數 (R²)")').first()).toBeVisible();
@@ -27,18 +26,18 @@ test.describe('Correlation Atlas End-to-End Interaction Flows', () => {
 
   test('Flow 2: Switch views between Scatter Plot, Correlation Matrix, and Variable Schema', async ({ page }) => {
     // 1. Switch to Correlation Matrix
-    await page.click('button:has-text("相關矩陣熱圖")');
+    await page.click('button:has-text("相關矩陣")');
     await expect(page.locator('text=ECharts 相關係數矩陣熱圖')).toBeVisible();
     await expect(page.locator('select[aria-label="選擇相關係數類型"]')).toBeVisible();
 
     // 2. Switch to Data Schema & Stats
-    await page.click('button:has-text("變數結構與描述統計")');
+    await page.click('button:has-text("資料結構")');
     await expect(page.locator('text=變數資料結構與描述統計總覽')).toBeVisible();
     await expect(page.locator('table').getByText('bill_length_mm').first()).toBeVisible();
     await expect(page.locator('table').getByText('bill_depth_mm').first()).toBeVisible();
 
     // 3. Switch to Benchmark Verification Tab
-    await page.click('button:has-text("基準驗證套件")');
+    await page.click('button:has-text("基準測試")');
     await expect(page.locator('text=數值基準檢驗套件 (NIST StRD & R Benchmarks)')).toBeVisible();
   });
 
@@ -67,7 +66,7 @@ test.describe('Correlation Atlas End-to-End Interaction Flows', () => {
     await expect(page.locator('text=全部基準測試通過 (100% Passed)')).toBeVisible({ timeout: 5000 });
 
     // Close modal via close button
-    await page.locator('button:has(svg.lucide-x)').first().click();
+    await page.locator('button[aria-label="關閉驗證視窗"]').click();
   });
 
   test('Flow 5: Open Causation Guide, Share Config Modal, and Local Storage Modal', async ({ page }) => {

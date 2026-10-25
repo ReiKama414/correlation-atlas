@@ -37,6 +37,7 @@ interface EChartsScatterPlotProps {
   showConfidenceBand: boolean;
   showPredictionBand: boolean;
   showResidualPlot: boolean;
+  isDark?: boolean;
 }
 
 interface PointData {
@@ -61,6 +62,7 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
   showConfidenceBand,
   showPredictionBand,
   showResidualPlot,
+  isDark = true,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.EChartsType | null>(null);
@@ -194,14 +196,14 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
     if (!chartRef.current) return;
 
     if (!chartInstance.current) {
-      chartInstance.current = echarts.init(chartRef.current, 'dark', {
+      chartInstance.current = echarts.init(chartRef.current, isDark ? 'dark' : undefined, {
         renderer: 'canvas',
       });
     }
 
     const chart = chartInstance.current;
 
-    // Determine domain bounds
+    // Bounds
     const xMin = rawX.length > 0 ? Math.min(...rawX) : 0;
     const xMax = rawX.length > 0 ? Math.max(...rawX) : 10;
     const xSpan = xMax - xMin || 1;
@@ -211,7 +213,7 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
     // Series construction
     const seriesList: echarts.SeriesOption[] = [];
 
-    // Confidence Band Area (if enabled and not in residual mode)
+    // Confidence Band Area
     if (!showResidualPlot && showConfidenceBand && regression.n >= 3) {
       const steps = 30;
       const step = (xDomainMax - xDomainMin) / steps;
@@ -225,7 +227,6 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
         upperBandPts.push([curX, ci.upper]);
       }
 
-      // Base lower line
       seriesList.push({
         name: '95% CI 下限',
         type: 'line',
@@ -236,7 +237,6 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
         silent: true,
       });
 
-      // Delta upper line filling area between
       const deltaBandPts = upperBandPts.map((p, i) => [p[0], p[1] - lowerBandPts[i][1]]);
       seriesList.push({
         name: '95% CI 範圍',
@@ -244,7 +244,7 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
         data: deltaBandPts,
         lineStyle: { opacity: 0 },
         areaStyle: {
-          color: 'rgba(99, 102, 241, 0.15)',
+          color: isDark ? 'rgba(99, 102, 241, 0.18)' : 'rgba(99, 102, 241, 0.12)',
         },
         stack: 'confidence-band',
         symbol: 'none',
@@ -270,7 +270,7 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
         name: '95% 預測上限',
         type: 'line',
         data: predUpper,
-        lineStyle: { type: 'dashed', color: '#818cf8', width: 1.5, opacity: 0.7 },
+        lineStyle: { type: 'dashed', color: '#818cf8', width: 1.5, opacity: 0.8 },
         symbol: 'none',
         silent: true,
       });
@@ -279,7 +279,7 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
         name: '95% 預測下限',
         type: 'line',
         data: predLower,
-        lineStyle: { type: 'dashed', color: '#818cf8', width: 1.5, opacity: 0.7 },
+        lineStyle: { type: 'dashed', color: '#818cf8', width: 1.5, opacity: 0.8 },
         symbol: 'none',
         silent: true,
       });
@@ -328,7 +328,7 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
       });
     }
 
-    // Scatter Series grouped by Category or Single
+    // Scatter Series
     if (groupVar && uniqueGroups.length > 0) {
       uniqueGroups.forEach((grp) => {
         const grpColor = groupColorMap.get(grp) || '#3b82f6';
@@ -344,7 +344,7 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
               color: p.isOutlier ? (excludeOutliers ? '#7f1d1d' : '#ef4444') : grpColor,
               borderColor: p.isOutlier ? '#fca5a5' : '#ffffff',
               borderWidth: p.isOutlier ? 2 : 1,
-              opacity: excludeOutliers && p.isOutlier ? 0.25 : 0.85,
+              opacity: excludeOutliers && p.isOutlier ? 0.25 : 0.88,
             },
           })),
           symbolSize: (_rawVal: unknown, params: unknown) => {
@@ -362,10 +362,10 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
           value: [p.x, showResidualPlot ? p.residual : p.y],
           itemData: p,
           itemStyle: {
-            color: p.isOutlier ? (excludeOutliers ? '#7f1d1d' : '#ef4444') : '#38bdf8',
+            color: p.isOutlier ? (excludeOutliers ? '#7f1d1d' : '#ef4444') : '#3b82f6',
             borderColor: p.isOutlier ? '#fca5a5' : '#ffffff',
             borderWidth: p.isOutlier ? 2 : 1,
-            opacity: excludeOutliers && p.isOutlier ? 0.25 : 0.85,
+            opacity: excludeOutliers && p.isOutlier ? 0.25 : 0.88,
           },
         })),
         symbolSize: (_rawVal: unknown, params: unknown) => {
@@ -377,19 +377,19 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
     }
 
     const option: echarts.EChartsOption = {
-      backgroundColor: '#090d16',
+      backgroundColor: isDark ? '#090d16' : '#ffffff',
       grid: {
-        left: 65,
-        right: 40,
-        top: 55,
-        bottom: 65,
+        left: 55,
+        right: 25,
+        top: 50,
+        bottom: 60,
       },
       tooltip: {
         trigger: 'item',
-        backgroundColor: '#0f172a',
-        borderColor: '#334155',
+        backgroundColor: isDark ? '#0f172a' : '#ffffff',
+        borderColor: isDark ? '#334155' : '#cbd5e1',
         borderWidth: 1,
-        textStyle: { color: '#f1f5f9', fontSize: 12 },
+        textStyle: { color: isDark ? '#f1f5f9' : '#0f172a', fontSize: 11 },
         formatter: (params: unknown) => {
           const p = params as { data?: { itemData?: PointData; value?: [number, number] }; seriesName?: string };
           const item = p?.data?.itemData;
@@ -399,16 +399,16 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
           const predY = regression.predict(item.x);
           return `
             <div style="font-family: ui-monospace, monospace; line-height: 1.5; font-size: 11px;">
-              <div style="font-weight: 600; color: #ffffff; border-bottom: 1px solid #334155; padding-bottom: 4px; margin-bottom: 4px;">
+              <div style="font-weight: 600; color: ${isDark ? '#ffffff' : '#0f172a'}; border-bottom: 1px solid ${isDark ? '#334155' : '#e2e8f0'}; padding-bottom: 3px; margin-bottom: 3px;">
                 樣本 #${item.index + 1} ${item.group !== '總體' ? `(${item.group})` : ''}
               </div>
-              <div>${xVar}: <span style="color: #818cf8; font-weight: bold;">${item.x}</span></div>
-              <div>${yVar}: <span style="color: #818cf8; font-weight: bold;">${item.y}</span></div>
+              <div>${xVar}: <span style="color: #6366f1; font-weight: bold;">${item.x}</span></div>
+              <div>${yVar}: <span style="color: #6366f1; font-weight: bold;">${item.y}</span></div>
               <div>回歸預測 ŷ: ${formatNumber(predY, 2)}</div>
-              <div>殘差 e: <span style="color: ${item.residual >= 0 ? '#34d399' : '#f87171'};">${formatNumber(item.residual, 2)}</span></div>
+              <div>殘差 e: <span style="color: ${item.residual >= 0 ? '#10b981' : '#f43f5e'};">${formatNumber(item.residual, 2)}</span></div>
               ${
                 item.isOutlier
-                  ? `<div style="color: #f87171; font-weight: bold; margin-top: 4px; border-top: 1px solid #7f1d1d; padding-top: 2px;">
+                  ? `<div style="color: #ef4444; font-weight: bold; margin-top: 3px; border-top: 1px solid ${isDark ? '#7f1d1d' : '#fecdd3'}; padding-top: 2px;">
                       ⚠️ 離群值 (${outlierMethod.toUpperCase()} 分數: ${formatNumber(item.outlierScore, 2)})
                     </div>`
                   : ''
@@ -418,26 +418,26 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
         },
       },
       legend: {
-        top: 12,
-        right: 20,
-        textStyle: { color: '#94a3b8', fontSize: 11 },
+        top: 10,
+        right: 15,
+        textStyle: { color: isDark ? '#94a3b8' : '#475569', fontSize: 11 },
         icon: 'circle',
       },
       toolbox: {
-        right: 20,
-        bottom: 8,
-        itemSize: 13,
+        right: 15,
+        bottom: 5,
+        itemSize: 12,
         feature: {
           saveAsImage: {
             title: '儲存圖表',
             pixelRatio: 2,
-            backgroundColor: '#090d16',
+            backgroundColor: isDark ? '#090d16' : '#ffffff',
           },
-          dataZoom: { title: { zoom: '區域縮放', back: '還原縮放' } },
+          dataZoom: { title: { zoom: '區域縮放', back: '還原' } },
           restore: { title: '重置' },
         },
         iconStyle: {
-          borderColor: '#64748b',
+          borderColor: isDark ? '#64748b' : '#94a3b8',
         },
       },
       dataZoom: [
@@ -447,24 +447,24 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
       xAxis: {
         name: xVar,
         nameLocation: 'center',
-        nameGap: 32,
-        nameTextStyle: { color: '#cbd5e1', fontWeight: 600, fontSize: 12 },
+        nameGap: 30,
+        nameTextStyle: { color: isDark ? '#cbd5e1' : '#334155', fontWeight: 600, fontSize: 11 },
         type: 'value',
         scale: true,
-        axisLine: { lineStyle: { color: '#475569' } },
-        axisLabel: { color: '#94a3b8', fontFamily: 'monospace' },
-        splitLine: { lineStyle: { color: '#1e293b', type: 'dashed' } },
+        axisLine: { lineStyle: { color: isDark ? '#475569' : '#cbd5e1' } },
+        axisLabel: { color: isDark ? '#94a3b8' : '#64748b', fontFamily: 'monospace', fontSize: 10 },
+        splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9', type: 'dashed' } },
       },
       yAxis: {
         name: showResidualPlot ? `殘差 (y - ŷ) of ${yVar}` : yVar,
         nameLocation: 'center',
-        nameGap: 45,
-        nameTextStyle: { color: '#cbd5e1', fontWeight: 600, fontSize: 12 },
+        nameGap: 40,
+        nameTextStyle: { color: isDark ? '#cbd5e1' : '#334155', fontWeight: 600, fontSize: 11 },
         type: 'value',
         scale: true,
-        axisLine: { lineStyle: { color: '#475569' } },
-        axisLabel: { color: '#94a3b8', fontFamily: 'monospace' },
-        splitLine: { lineStyle: { color: '#1e293b', type: 'dashed' } },
+        axisLine: { lineStyle: { color: isDark ? '#475569' : '#cbd5e1' } },
+        axisLabel: { color: isDark ? '#94a3b8' : '#64748b', fontFamily: 'monospace', fontSize: 10 },
+        splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9', type: 'dashed' } },
       },
       series: seriesList,
     };
@@ -497,6 +497,7 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
     showResidualPlot,
     excludeOutliers,
     outlierMethod,
+    isDark,
   ]);
 
   const handleDownloadPNG = () => {
@@ -504,7 +505,7 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
     const url = chartInstance.current.getDataURL({
       type: 'png',
       pixelRatio: 2,
-      backgroundColor: '#090d16',
+      backgroundColor: isDark ? '#090d16' : '#ffffff',
     });
     const a = document.createElement('a');
     a.href = url;
@@ -523,134 +524,134 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 min-w-0 max-w-full">
       {/* Chart Top Header */}
-      <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="font-semibold text-slate-100 text-sm">
-              {showResidualPlot ? '殘差分佈診斷圖 (Residual Plot)' : 'ECharts 雙變數散佈圖與 OLS 線性回歸'}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs transition-colors">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100 text-xs sm:text-sm">
+              {showResidualPlot ? '殘差分佈診斷圖 (Residual Plot)' : 'ECharts 雙變數散佈圖與線性回歸'}
             </h2>
-            <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-indigo-900/40 text-indigo-300 border border-indigo-700/50">
+            <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50">
               {xVar} ➔ {yVar}
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5">
-            可滾動滾輪或框選區域即時縮放；點擊離群點查看庫克距離 (Cook's D) 與預測殘差
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+            滾動滾輪或框選縮放；檢視庫克距離 (Cook's D) 與預測殘差
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={handleResetZoom}
-            className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded text-xs cursor-pointer transition-colors"
+            className="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded text-[11px] cursor-pointer transition-colors"
             title="還原縮放視野"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
-            <span>重設縮放</span>
+            <RotateCcw className="w-3 h-3 text-slate-400" />
+            <span className="hidden xs:inline">重設縮放</span>
           </button>
 
           <button
             onClick={handleDownloadPNG}
-            className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded text-xs font-medium cursor-pointer transition-colors shadow-sm"
+            className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded text-[11px] font-medium cursor-pointer transition-colors shadow-xs"
             title="下載高解析度圖表 PNG"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-3 h-3" />
             <span>下載 PNG</span>
           </button>
         </div>
       </div>
 
       {/* Main ECharts Container */}
-      <div className="bg-slate-950 border border-slate-800 rounded-lg p-2 overflow-hidden shadow-inner">
-        <div ref={chartRef} className="w-full h-[460px]" />
+      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-1.5 sm:p-2 overflow-hidden shadow-xs transition-colors">
+        <div ref={chartRef} className="w-full h-[380px] sm:h-[450px]" />
       </div>
 
       {/* Statistical Indicator Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
         {/* Metric 1: Correlation */}
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-2.5 space-y-0.5">
-          <div className="text-[10px] text-slate-400 font-medium flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 shadow-xs transition-colors">
+          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
             <span>{correlationMethod === 'spearman' ? 'Spearman (ρ)' : 'Pearson (r)'}</span>
-            <Activity className="w-3 h-3 text-indigo-400" />
+            <Activity className="w-3 h-3 text-indigo-500" />
           </div>
-          <div className="text-lg font-bold font-mono text-white">
+          <div className="text-base sm:text-lg font-bold font-mono text-slate-900 dark:text-white">
             {formatNumber(activeCorrelation.r, 3)}
           </div>
-          <div className="text-[9px] text-slate-500">
+          <div className="text-[9px] text-slate-400">
             {Math.abs(activeCorrelation.r) > 0.7 ? '強關聯' : Math.abs(activeCorrelation.r) > 0.3 ? '中等關聯' : '弱關聯'}
           </div>
         </div>
 
         {/* Metric 2: R-Squared */}
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-2.5 space-y-0.5">
-          <div className="text-[10px] text-slate-400 font-medium flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 shadow-xs transition-colors">
+          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
             <span>判定係數 (R²)</span>
-            <TrendingUp className="w-3 h-3 text-indigo-400" />
+            <TrendingUp className="w-3 h-3 text-indigo-500" />
           </div>
-          <div className="text-lg font-bold font-mono text-indigo-300">
+          <div className="text-base sm:text-lg font-bold font-mono text-indigo-600 dark:text-indigo-300">
             {formatNumber(regression.rSquared, 3)}
           </div>
-          <div className="text-[9px] text-slate-500">
+          <div className="text-[9px] text-slate-400">
             解釋變異 {(regression.rSquared * 100).toFixed(1)}%
           </div>
         </div>
 
         {/* Metric 3: P-Value */}
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-2.5 space-y-0.5">
-          <div className="text-[10px] text-slate-400 font-medium flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 shadow-xs transition-colors">
+          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
             <span>顯著性 p-value</span>
-            <Sparkles className="w-3 h-3 text-indigo-400" />
+            <Sparkles className="w-3 h-3 text-indigo-500" />
           </div>
-          <div className="text-xs font-bold font-mono text-white mt-1">
+          <div className="text-xs font-bold font-mono text-slate-900 dark:text-white mt-1">
             {formatPValue(activeCorrelation.pValue)}
           </div>
-          <div className="text-[9px] text-slate-500 font-mono">
+          <div className="text-[9px] text-slate-400 font-mono">
             t = {formatNumber(activeCorrelation.tStat, 2)} (df={activeCorrelation.df})
           </div>
         </div>
 
         {/* Metric 4: Regression Equation */}
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-2.5 space-y-0.5 col-span-2 sm:col-span-1 lg:col-span-2">
-          <div className="text-[10px] text-slate-400 font-medium">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 col-span-2 sm:col-span-1 lg:col-span-2 shadow-xs transition-colors">
+          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
             回歸方程式 (OLS Equation)
           </div>
-          <div className="text-xs font-bold font-mono text-emerald-400 truncate">
+          <div className="text-xs font-bold font-mono text-emerald-600 dark:text-emerald-400 truncate">
             Y = {formatNumber(regression.slope, 3)} · X {regression.intercept >= 0 ? '+' : '-'} {formatNumber(Math.abs(regression.intercept), 3)}
           </div>
-          <div className="text-[9px] text-slate-500 font-mono">
+          <div className="text-[9px] text-slate-400 font-mono">
             斜率誤 SE(β) = {formatNumber(regression.seSlope, 3)}
           </div>
         </div>
 
         {/* Metric 5: 95% CI */}
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-2.5 space-y-0.5">
-          <div className="text-[10px] text-slate-400 font-medium">95% 信賴區間</div>
-          <div className="text-[11px] font-bold font-mono text-slate-200">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 shadow-xs transition-colors">
+          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">95% 信賴區間</div>
+          <div className="text-[11px] font-bold font-mono text-slate-800 dark:text-slate-200">
             [{formatNumber(activeCorrelation.ci95[0], 2)}, {formatNumber(activeCorrelation.ci95[1], 2)}]
           </div>
-          <div className="text-[9px] text-slate-500">Fisher's z 轉換</div>
+          <div className="text-[9px] text-slate-400">Fisher's z 轉換</div>
         </div>
       </div>
 
       {/* Group Comparison Table */}
       {groupVar && groupRegressions.length > 0 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 space-y-2 text-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 space-y-2 text-xs shadow-xs transition-colors">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 font-semibold text-slate-200">
-              <Layers className="w-3.5 h-3.5 text-indigo-400" />
+            <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200">
+              <Layers className="w-3.5 h-3.5 text-indigo-500" />
               <span>分組統計比較 ({groupVar})</span>
             </div>
             {simpsonsParadox.isDetected && (
-              <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-semibold">
-                <Flame className="w-3 h-3 text-rose-400" /> 辛普森悖論 (Simpson's Paradox)
+              <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-semibold">
+                <Flame className="w-3 h-3 text-rose-500" /> 辛普森悖論 (Simpson's Paradox)
               </span>
             )}
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left font-mono">
-              <thead className="bg-slate-950 text-slate-400 text-[11px]">
+          <div className="overflow-x-auto -mx-3 px-3">
+            <table className="w-full text-left font-mono min-w-[500px]">
+              <thead className="bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 text-[11px]">
                 <tr>
                   <th className="py-1.5 px-2">分組 (Group)</th>
                   <th className="py-1.5 px-2">樣本數 (n)</th>
@@ -661,27 +662,27 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
                   <th className="py-1.5 px-2">p-value</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800 text-[11px]">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
                 {groupRegressions.map((gr) => (
-                  <tr key={`gr-row-${gr.group}`} className="hover:bg-slate-800/50">
+                  <tr key={`gr-row-${gr.group}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                     <td className="py-1.5 px-2 font-sans font-medium flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: gr.color }} />
-                      <span className="text-white">{gr.group}</span>
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: gr.color }} />
+                      <span className="text-slate-900 dark:text-white truncate">{gr.group}</span>
                     </td>
-                    <td className="py-1.5 px-2 text-slate-300">{gr.count}</td>
-                    <td className="py-1.5 px-2 font-bold text-indigo-300">
+                    <td className="py-1.5 px-2 text-slate-700 dark:text-slate-300">{gr.count}</td>
+                    <td className="py-1.5 px-2 font-bold text-indigo-600 dark:text-indigo-300">
                       {formatNumber(gr.correlation.r, 3)}
                     </td>
-                    <td className="py-1.5 px-2 text-slate-300">
+                    <td className="py-1.5 px-2 text-slate-700 dark:text-slate-300">
                       {formatNumber(gr.regression.rSquared, 3)}
                     </td>
-                    <td className="py-1.5 px-2 text-emerald-400">
+                    <td className="py-1.5 px-2 text-emerald-600 dark:text-emerald-400">
                       {formatNumber(gr.regression.slope, 3)}
                     </td>
-                    <td className="py-1.5 px-2 text-slate-300">
+                    <td className="py-1.5 px-2 text-slate-700 dark:text-slate-300">
                       {formatNumber(gr.regression.intercept, 3)}
                     </td>
-                    <td className="py-1.5 px-2 text-slate-400">
+                    <td className="py-1.5 px-2 text-slate-500 dark:text-slate-400">
                       {formatPValue(gr.correlation.pValue)}
                     </td>
                   </tr>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useTheme } from './utils/theme';
 import { Navbar } from './components/Navbar';
 import { CausationBanner } from './components/CausationBanner';
 import { Sidebar } from './components/Sidebar';
@@ -37,8 +38,12 @@ import type {
 } from './types';
 
 export function App() {
+  // Theme hook
+  const { theme, setTheme, isDark } = useTheme();
+
   // Navigation & Modals
   const [activeTab, setActiveTab] = useState<'scatter' | 'matrix' | 'variables' | 'verification'>('scatter');
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isCausationModalOpen, setIsCausationModalOpen] = useState(false);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -388,7 +393,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-150">
       {/* Top Navigation */}
       <Navbar
         currentDatasetId={currentDatasetId}
@@ -400,20 +405,26 @@ export function App() {
         onOpenVerificationModal={() => setIsVerificationModalOpen(true)}
         onOpenShareModal={() => setIsShareModalOpen(true)}
         onOpenStorageModal={() => setIsStorageModalOpen(true)}
+        onToggleMobileSidebar={() => setIsMobileDrawerOpen((prev) => !prev)}
         rowCount={parsedData?.rowCount || 0}
         chartEngine={chartEngine}
         onChangeChartEngine={setChartEngine}
+        theme={theme}
+        onSetTheme={setTheme}
+        isDark={isDark}
+        xVar={xVariable}
+        yVar={yVariable}
       />
 
       {/* CSV Parser Warnings (e.g. large file truncation notice) */}
       {csvWarnings.length > 0 && (
-        <div className="bg-amber-950 border-b border-amber-800 text-amber-200 px-4 py-2 text-xs flex items-center justify-between">
+        <div className="bg-amber-100 dark:bg-amber-950 border-b border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-200 px-4 py-2 text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span>⚠️ {csvWarnings.join('；')}</span>
           </div>
           <button
             onClick={() => setCsvWarnings([])}
-            className="text-amber-400 hover:text-white underline text-[11px] cursor-pointer"
+            className="text-amber-600 dark:text-amber-400 hover:underline text-[11px] cursor-pointer"
           >
             知道了
           </button>
@@ -431,7 +442,7 @@ export function App() {
       />
 
       {/* Main Layout Area */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-7xl w-full mx-auto">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-7xl w-full mx-auto min-w-0">
         {/* Left Control Sidebar */}
         {parsedData && (
           <Sidebar
@@ -463,18 +474,20 @@ export function App() {
             onUpdateCategoricalFilter={handleUpdateCategoricalFilter}
             onResetFilters={handleResetFilters}
             rawRows={parsedData.rawRows}
+            isMobileDrawerOpen={isMobileDrawerOpen}
+            onCloseMobileDrawer={() => setIsMobileDrawerOpen(false)}
           />
         )}
 
         {/* Center Main Stage Content */}
-        <main className="flex-1 p-3 sm:p-5 overflow-y-auto">
+        <main className="flex-1 p-3 sm:p-5 overflow-y-auto min-w-0">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center h-96 space-y-2">
               <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-slate-400 text-xs">正在載入並解析統計資料庫...</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs">正在載入並解析統計資料庫...</p>
             </div>
           ) : !parsedData ? (
-            <div className="text-center py-20 text-slate-400 text-xs">尚無資料，請匯入 CSV 或選擇範例資料集</div>
+            <div className="text-center py-20 text-slate-500 dark:text-slate-400 text-xs">尚無資料，請匯入 CSV 或選擇範例資料集</div>
           ) : (
             <>
               {/* Tab 1: Scatter & Regression Studio */}
@@ -491,6 +504,7 @@ export function App() {
                     showConfidenceBand={showConfidenceBand}
                     showPredictionBand={showPredictionBand}
                     showResidualPlot={showResidualPlot}
+                    isDark={isDark}
                   />
                 ) : (
                   <ScatterPlot
@@ -505,6 +519,7 @@ export function App() {
                     showPredictionBand={showPredictionBand}
                     showResidualPlot={showResidualPlot}
                     onOpenGuide={() => setIsCausationModalOpen(true)}
+                    isDark={isDark}
                   />
                 )
               )}
@@ -522,6 +537,7 @@ export function App() {
                     onSelectPair={handleSelectPairFromMatrix}
                     activeColorTheme={colorTheme}
                     onChangeColorTheme={setColorTheme}
+                    isDark={isDark}
                   />
                 ) : (
                   <CorrelationMatrix
@@ -534,6 +550,7 @@ export function App() {
                     onSelectPair={handleSelectPairFromMatrix}
                     activeColorTheme={colorTheme}
                     onChangeColorTheme={setColorTheme}
+                    isDark={isDark}
                   />
                 )
               )}
@@ -573,12 +590,12 @@ export function App() {
               {/* Tab 4: Benchmark Tests */}
               {activeTab === 'verification' && (
                 <div className="space-y-4">
-                  <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-sm">
                     <div>
-                      <h2 className="text-sm font-bold text-white">
+                      <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                         數值基準檢驗套件 (NIST StRD & R Benchmarks)
                       </h2>
-                      <p className="text-slate-400 mt-0.5">
+                      <p className="text-slate-500 dark:text-slate-400 mt-0.5">
                         即時運行美國國家標準局 (NIST) 與 R 語言標準參考資料集，全面驗證線性回歸、相關係數與辛普森悖論之數值精度。
                       </p>
                     </div>
@@ -589,8 +606,8 @@ export function App() {
                       開啟驗證視窗
                     </button>
                   </div>
-                  <div className="p-8 text-center bg-slate-900 border border-slate-800 rounded-xl space-y-3">
-                    <p className="text-slate-300 text-xs">
+                  <div className="p-8 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-3 shadow-sm">
+                    <p className="text-slate-700 dark:text-slate-300 text-xs">
                       所有統計演算法皆完全在純 TypeScript 內部實作，不依賴外部不透明 API：
                     </p>
                     <button
