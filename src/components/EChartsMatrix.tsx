@@ -172,10 +172,11 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
         },
       },
       grid: {
-        left: 100,
+        left: 20,
         right: 80,
-        top: 35,
-        bottom: 85,
+        top: 25,
+        bottom: 30,
+        containLabel: true,
       },
       xAxis: {
         type: 'category',
@@ -308,19 +309,22 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 min-w-0 max-w-full" data-testid="matrix-container">
       {/* Controls Bar */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs shadow-sm">
+      <div
+        data-testid="matrix-header"
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs shadow-sm"
+      >
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
+            <h2 data-testid="matrix-title" className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
               ECharts 相關係數矩陣熱圖 ({correlationMethod === 'spearman' ? 'Spearman ρ' : 'Pearson r'})
             </h2>
             <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50">
               {orderedVariables.length} × {orderedVariables.length} 維度
             </span>
           </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+          <p data-testid="matrix-description" className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
             點擊任一熱圖方格可立即指定為 X/Y 軸切換至散佈圖分析視圖
           </p>
         </div>

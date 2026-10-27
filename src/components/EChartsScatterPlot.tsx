@@ -379,10 +379,11 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
     const option: echarts.EChartsOption = {
       backgroundColor: isDark ? '#090d16' : '#ffffff',
       grid: {
-        left: 55,
+        left: 20,
         right: 25,
-        top: 50,
-        bottom: 60,
+        top: 25,
+        bottom: 25,
+        containLabel: true,
       },
       tooltip: {
         trigger: 'item',
@@ -416,12 +417,6 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
             </div>
           `;
         },
-      },
-      legend: {
-        top: 10,
-        right: 15,
-        textStyle: { color: isDark ? '#94a3b8' : '#475569', fontSize: 11 },
-        icon: 'circle',
       },
       toolbox: {
         right: 15,
@@ -524,165 +519,244 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
   };
 
   return (
-    <div className="space-y-3 min-w-0 max-w-full">
-      {/* Chart Top Header */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs transition-colors">
+    <div className="space-y-4 min-w-0 max-w-full">
+      {/* 1. Chart Top Header & Description */}
+      <div
+        data-testid="chart-header"
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-sm transition-colors"
+      >
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="font-semibold text-slate-900 dark:text-slate-100 text-xs sm:text-sm">
+            <h2
+              data-testid="chart-title"
+              className="font-semibold text-slate-900 dark:text-slate-100 text-sm sm:text-base tracking-tight"
+            >
               {showResidualPlot ? '殘差分佈診斷圖 (Residual Plot)' : 'ECharts 雙變數散佈圖與線性回歸'}
             </h2>
-            <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50">
+            <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50 shrink-0">
               {xVar} ➔ {yVar}
             </span>
           </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-            滾動滾輪或框選縮放；檢視庫克距離 (Cook's D) 與預測殘差
+          {/* 2. Description */}
+          <p
+            data-testid="chart-description"
+            className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed"
+          >
+            {showResidualPlot
+              ? '診斷回歸等分散性 (Homoscedasticity) 與模型線性假設殘差分佈 (y - ŷ)'
+              : '普通最小平方法 (OLS) 線性回歸擬合、判定係數 R² 與離群值影響度'}
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
           <button
             onClick={handleResetZoom}
-            className="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded text-[11px] cursor-pointer transition-colors"
+            className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors shadow-xs"
             title="還原縮放視野"
           >
-            <RotateCcw className="w-3 h-3 text-slate-400" />
-            <span className="hidden xs:inline">重設縮放</span>
+            <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+            <span>重設縮放</span>
           </button>
 
           <button
             onClick={handleDownloadPNG}
-            className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded text-[11px] font-medium cursor-pointer transition-colors shadow-xs"
+            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors shadow-xs"
             title="下載高解析度圖表 PNG"
           >
-            <Download className="w-3 h-3" />
+            <Download className="w-3.5 h-3.5" />
             <span>下載 PNG</span>
           </button>
         </div>
       </div>
 
-      {/* Main ECharts Container */}
-      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-1.5 sm:p-2 overflow-hidden shadow-xs transition-colors">
-        <div ref={chartRef} className="w-full h-[380px] sm:h-[450px]" />
-      </div>
-
-      {/* Statistical Indicator Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
+      {/* 3. Statistical Indicator Strip (Placed BEFORE Chart as per Layout Integrity Rules) */}
+      <div
+        data-testid="chart-statistics"
+        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 text-xs"
+      >
         {/* Metric 1: Correlation */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 shadow-xs transition-colors">
-          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-3.5 space-y-1 shadow-xs transition-colors">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
             <span>{correlationMethod === 'spearman' ? 'Spearman (ρ)' : 'Pearson (r)'}</span>
-            <Activity className="w-3 h-3 text-indigo-500" />
+            <Activity className="w-3.5 h-3.5 text-indigo-500" />
           </div>
-          <div className="text-base sm:text-lg font-bold font-mono text-slate-900 dark:text-white">
+          <div className="text-lg sm:text-xl font-bold font-mono text-slate-900 dark:text-white">
             {formatNumber(activeCorrelation.r, 3)}
           </div>
-          <div className="text-[9px] text-slate-400">
+          <div className="text-[10px] text-slate-500">
             {Math.abs(activeCorrelation.r) > 0.7 ? '強關聯' : Math.abs(activeCorrelation.r) > 0.3 ? '中等關聯' : '弱關聯'}
           </div>
         </div>
 
         {/* Metric 2: R-Squared */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 shadow-xs transition-colors">
-          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-3.5 space-y-1 shadow-xs transition-colors">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
             <span>判定係數 (R²)</span>
-            <TrendingUp className="w-3 h-3 text-indigo-500" />
+            <TrendingUp className="w-3.5 h-3.5 text-indigo-500" />
           </div>
-          <div className="text-base sm:text-lg font-bold font-mono text-indigo-600 dark:text-indigo-300">
+          <div className="text-lg sm:text-xl font-bold font-mono text-indigo-600 dark:text-indigo-300">
             {formatNumber(regression.rSquared, 3)}
           </div>
-          <div className="text-[9px] text-slate-400">
+          <div className="text-[10px] text-slate-500">
             解釋變異 {(regression.rSquared * 100).toFixed(1)}%
           </div>
         </div>
 
         {/* Metric 3: P-Value */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 shadow-xs transition-colors">
-          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-3.5 space-y-1 shadow-xs transition-colors">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
             <span>顯著性 p-value</span>
-            <Sparkles className="w-3 h-3 text-indigo-500" />
+            <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
           </div>
-          <div className="text-xs font-bold font-mono text-slate-900 dark:text-white mt-1">
+          <div className="text-xs sm:text-sm font-bold font-mono text-slate-900 dark:text-white mt-1">
             {formatPValue(activeCorrelation.pValue)}
           </div>
-          <div className="text-[9px] text-slate-400 font-mono">
+          <div className="text-[10px] text-slate-500 font-mono">
             t = {formatNumber(activeCorrelation.tStat, 2)} (df={activeCorrelation.df})
           </div>
         </div>
 
         {/* Metric 4: Regression Equation */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 col-span-2 sm:col-span-1 lg:col-span-2 shadow-xs transition-colors">
-          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-3.5 space-y-1 col-span-2 sm:col-span-1 lg:col-span-2 shadow-xs transition-colors">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
             回歸方程式 (OLS Equation)
           </div>
-          <div className="text-xs font-bold font-mono text-emerald-600 dark:text-emerald-400 truncate">
+          <div className="text-xs sm:text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400 truncate">
             Y = {formatNumber(regression.slope, 3)} · X {regression.intercept >= 0 ? '+' : '-'} {formatNumber(Math.abs(regression.intercept), 3)}
           </div>
-          <div className="text-[9px] text-slate-400 font-mono">
+          <div className="text-[10px] text-slate-500 font-mono">
             斜率誤 SE(β) = {formatNumber(regression.seSlope, 3)}
           </div>
         </div>
 
         {/* Metric 5: 95% CI */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-0.5 shadow-xs transition-colors">
-          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">95% 信賴區間</div>
-          <div className="text-[11px] font-bold font-mono text-slate-800 dark:text-slate-200">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-3.5 space-y-1 shadow-xs transition-colors">
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">95% 信賴區間</div>
+          <div className="text-xs font-bold font-mono text-slate-800 dark:text-slate-200">
             [{formatNumber(activeCorrelation.ci95[0], 2)}, {formatNumber(activeCorrelation.ci95[1], 2)}]
           </div>
-          <div className="text-[9px] text-slate-400">Fisher's z 轉換</div>
+          <div className="text-[10px] text-slate-500">Fisher's z 轉換</div>
         </div>
       </div>
 
-      {/* Group Comparison Table */}
+      {/* 4. Main ECharts Container (Clean Canvas Drawing Area) */}
+      <div
+        data-testid="chart-drawing-area"
+        className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2 sm:p-3 overflow-hidden shadow-xs transition-colors"
+      >
+        <div ref={chartRef} className="w-full h-[380px] sm:h-[450px]" />
+      </div>
+
+      {/* 5. Dedicated Legend & Footer (In Normal Document Flow, Zero Overlap With Data Points) */}
+      <div
+        data-testid="chart-legend-footer"
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs transition-colors"
+      >
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span className="font-semibold text-slate-700 dark:text-slate-300 text-xs shrink-0">圖例說明：</span>
+
+          {/* Regression Line Legend */}
+          {!showResidualPlot && (
+            <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
+              <span className="w-4 h-1 bg-indigo-500 rounded-full shrink-0"></span>
+              <span>總體線性回歸 (OLS)</span>
+            </div>
+          )}
+
+          {/* Confidence Band Legend */}
+          {showConfidenceBand && !showResidualPlot && (
+            <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
+              <span className="w-3.5 h-2.5 bg-indigo-500/20 border border-indigo-400 rounded-xs shrink-0"></span>
+              <span>95% 信賴帶</span>
+            </div>
+          )}
+
+          {/* Prediction Band Legend */}
+          {showPredictionBand && !showResidualPlot && (
+            <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
+              <span className="w-4 h-0 border-t border-dashed border-indigo-400 shrink-0"></span>
+              <span>95% 預測帶</span>
+            </div>
+          )}
+
+          {/* Group Legends */}
+          {groupVar &&
+            uniqueGroups.map((grp) => (
+              <div key={`legend-${grp}`} className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
+                <span
+                  className="w-2.5 h-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: groupColorMap.get(grp) || '#3b82f6' }}
+                ></span>
+                <span className="truncate max-w-[120px]">{grp}</span>
+              </div>
+            ))}
+
+          {/* Outliers Legend */}
+          <div className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium">
+            <span className="w-2.5 h-2.5 rounded-full border border-rose-500 bg-rose-500/20 shrink-0"></span>
+            <span>
+              {outlierResult.indices.size} 筆離群值 ({outlierMethod.toUpperCase()}) {excludeOutliers ? '(已剔除)' : ''}
+            </span>
+          </div>
+        </div>
+
+        <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono shrink-0">
+          有效樣本 n = {effX.length} {rawX.length !== effX.length ? `(原始 ${rawX.length})` : ''}
+        </div>
+      </div>
+
+      {/* 6. Group Comparison Table */}
       {groupVar && groupRegressions.length > 0 && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 space-y-2 text-xs shadow-xs transition-colors">
-          <div className="flex items-center justify-between">
+        <div
+          data-testid="chart-group-table"
+          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3 text-xs shadow-sm transition-colors"
+        >
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200">
               <Layers className="w-3.5 h-3.5 text-indigo-500" />
               <span>分組統計比較 ({groupVar})</span>
             </div>
             {simpsonsParadox.isDetected && (
-              <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-semibold">
+              <span className="flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-semibold">
                 <Flame className="w-3 h-3 text-rose-500" /> 辛普森悖論 (Simpson's Paradox)
               </span>
             )}
           </div>
 
-          <div className="overflow-x-auto -mx-3 px-3">
-            <table className="w-full text-left font-mono min-w-[500px]">
+          <div className="overflow-x-auto -mx-1 px-1">
+            <table className="w-full text-left font-mono min-w-[550px]">
               <thead className="bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 text-[11px]">
                 <tr>
-                  <th className="py-1.5 px-2">分組 (Group)</th>
-                  <th className="py-1.5 px-2">樣本數 (n)</th>
-                  <th className="py-1.5 px-2">相關係數 (r)</th>
-                  <th className="py-1.5 px-2">判定係數 (R²)</th>
-                  <th className="py-1.5 px-2">斜率 (β₁)</th>
-                  <th className="py-1.5 px-2">截距 (β₀)</th>
-                  <th className="py-1.5 px-2">p-value</th>
+                  <th className="py-2 px-2.5 rounded-l-lg">分組 (Group)</th>
+                  <th className="py-2 px-2.5">樣本數 (n)</th>
+                  <th className="py-2 px-2.5">相關係數 (r)</th>
+                  <th className="py-2 px-2.5">判定係數 (R²)</th>
+                  <th className="py-2 px-2.5">斜率 (β₁)</th>
+                  <th className="py-2 px-2.5">截距 (β₀)</th>
+                  <th className="py-2 px-2.5 rounded-r-lg">p-value</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
                 {groupRegressions.map((gr) => (
                   <tr key={`gr-row-${gr.group}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                    <td className="py-1.5 px-2 font-sans font-medium flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: gr.color }} />
-                      <span className="text-slate-900 dark:text-white truncate">{gr.group}</span>
+                    <td className="py-2 px-2.5 font-sans font-medium flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: gr.color }} />
+                      <span className="text-slate-900 dark:text-white truncate max-w-[120px]">{gr.group}</span>
                     </td>
-                    <td className="py-1.5 px-2 text-slate-700 dark:text-slate-300">{gr.count}</td>
-                    <td className="py-1.5 px-2 font-bold text-indigo-600 dark:text-indigo-300">
+                    <td className="py-2 px-2.5 text-slate-700 dark:text-slate-300">{gr.count}</td>
+                    <td className="py-2 px-2.5 font-bold text-indigo-600 dark:text-indigo-300">
                       {formatNumber(gr.correlation.r, 3)}
                     </td>
-                    <td className="py-1.5 px-2 text-slate-700 dark:text-slate-300">
+                    <td className="py-2 px-2.5 text-slate-700 dark:text-slate-300">
                       {formatNumber(gr.regression.rSquared, 3)}
                     </td>
-                    <td className="py-1.5 px-2 text-emerald-600 dark:text-emerald-400">
+                    <td className="py-2 px-2.5 text-emerald-600 dark:text-emerald-400">
                       {formatNumber(gr.regression.slope, 3)}
                     </td>
-                    <td className="py-1.5 px-2 text-slate-700 dark:text-slate-300">
+                    <td className="py-2 px-2.5 text-slate-700 dark:text-slate-300">
                       {formatNumber(gr.regression.intercept, 3)}
                     </td>
-                    <td className="py-1.5 px-2 text-slate-500 dark:text-slate-400">
+                    <td className="py-2 px-2.5 text-slate-500 dark:text-slate-400">
                       {formatPValue(gr.correlation.pValue)}
                     </td>
                   </tr>

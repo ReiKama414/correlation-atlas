@@ -106,19 +106,22 @@ export const CorrelationMatrix: React.FC<CorrelationMatrixProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 min-w-0 max-w-full" data-testid="matrix-container">
       {/* Matrix Controls & Toolbar */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div
+        data-testid="matrix-header"
+        className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"
+      >
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+            <h2 data-testid="matrix-title" className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               相關係數矩陣熱圖 ({correlationMethod === 'spearman' ? 'Spearman ρ' : 'Pearson r'})
             </h2>
             <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30">
               {orderedVariables.length} × {orderedVariables.length} 維度
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p data-testid="matrix-description" className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             點擊任一熱圖方格可立即跳轉至該變數成對之散佈圖與回歸分析視圖
           </p>
         </div>
