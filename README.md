@@ -1,112 +1,192 @@
-# Correlation Atlas (統計關聯研究工作室)
+# Correlation Atlas
 
-> 專為實證統計、數據科學與計量研究打造的專業級統計關聯研究與因果謬誤診斷工作台。  
-> 支援 CSV 匯入、變數選取、Pearson / Spearman 相關矩陣熱圖、雙變數散佈圖、OLS 線性回歸擬合、判定係數 $R^2$、95% 信賴與預測區間帶、離群值影響度診斷、分組比較與辛普森悖論 (Simpson's Paradox) 自動示警，並內建可驗證的 NIST / R 統計標準基準檢驗與 IndexedDB 本地持久化。
+**English** · [繁體中文](README.zh-TW.md)
 
----
+> A professional, zero-server **statistical correlation studio and regression diagnostics workbench** built for empirical researchers, educators, and data practitioners.
 
-## 🌟 核心特色 (Key Features)
-
-### 1. 📂 彈性 CSV 匯入與異常防護
-- **完整異常處理**：處理空檔案（0 bytes）、僅有表頭無資料列、亂碼、缺少欄位與異常字元；自動偵測逗號 `,`、分號 `;`、Tab `\t` 與管線 `|` 分隔符。
-- **缺失值容錯**：自動識別 `NA`、`null`、`NaN`、`?`、`-`、`None` 及空字串，不干擾數值欄位型態判別。
-- **大檔案防護**：超過 50,000 筆資料時自動提醒並進行分批採樣，防止瀏覽器記憶體崩潰。
-- **內建研究資料集**：
-  - **Palmer Penguins (南蠻企鵝)**：經典辛普森悖論展示（整體負相關，分組內部 Adelie, Chinstrap, Gentoo 各組皆為顯著正相關）。
-  - **Anscombe's Quartet (安斯庫姆四重奏)**：均值、方差、回歸直線完全相同，但分佈完全不同的傳奇資料。
-  - **Spurious Ice Cream (冰淇淋與溺水)**：以「氣溫」為潛在干擾因子的荒謬相關代表案例。
-  - **Fisher's Iris (鳶尾花形態)**：經典多變數連續特徵分佈。
-  - **World Happiness (全球幸福指數與經濟指標)**：多維度社會經濟指標關聯。
-  - **Marketing ROI (全通路行銷廣告與銷售額)**：廣告預算投入與回歸預測。
-
-### 2. 📊 Apache ECharts 專業圖表與縮放
-- **雙變數散佈圖與線性回歸**：普通最小平方法 (OLS) 回歸直線、斜率 $\beta_1$、截距 $\beta_0$、判定係數 $R^2$、斜率標準誤與 $t$ 檢定 $p$ 值。
-- **雙層統計區間帶**：
-  - 95% 信賴區間帶 (Confidence Band, CI): 反映母體期望值的估計不確定度。
-  - 95% 預測區間帶 (Prediction Band): 涵蓋單一觀測值變異範圍。
-- **殘差診斷模式 (Residual Plot)**：一鍵切換繪製殘差 $(y_i - \hat{y}_i)$ 分佈，診斷等分散性 (Homoscedasticity) 與線性假設。
-- **相關係數矩陣熱圖**：支援全對稱矩陣、下三角矩陣 (Lower) 或上三角矩陣 (Upper)；支援依**階層聚類距離關聯分群 (Clustered Seriation)**、原始順序或字母排序。
-- **互動工具箱**：支援區域框選縮放 (DataZoom)、滑鼠滾輪縮放、圖表還原、高解析度 PNG 匯出。
-
-### 3. 🎯 離群值檢驗與強健性對比 (Outliers)
-- **多演算法支援**：
-  - **Cook's Distance (庫克距離)**：辨識具高槓桿 (Leverage) 與高殘差的雙變數回歸影響點 ($D_i > 4/n$)。
-  - **Tukey IQR (四分位距圍欄)**：超出 $Q_1 - 1.5 \times IQR$ 或 $Q_3 + 1.5 \times IQR$。
-  - **Z-Score (標準化分數)**：$|Z| > 2.5$。
-- **動態剔除開關 (Exclude Outliers)**：即時對比「納入 vs 排除」離群值後的回歸斜率與 $R^2$ 變化。
-
-### 4. 👥 分組比較與辛普森悖論偵測 (Simpson's Paradox Alert)
-- 選取類別分組變數後，自動為各群組繪製獨立分色回歸線與分組指標卡。
-- **辛普森悖論即時示警**：當整體關聯方向（正/負）與多數群組內部方向發生逆轉時，觸發警示橫幅與深入分析說明。
-
-### 5. 💾 IndexedDB 本地持久化與研究快照
-- **無須帳號與伺服器**：所有上傳之自訂 CSV 均安全持久化儲存於瀏覽器 IndexedDB 沙盒中，離線亦可使用。
-- **研究快照管理 (Snapshots)**：隨時將目前的座標軸、離群值規則、篩選條件保存為具名快照，日後可一鍵還原。
-- **重整狀態自動恢復**：瀏覽器重整後自動讀取最後使用中的資料集與設定。
-
-### 6. 🧪 可驗證的純 TypeScript 統計函式庫與基準套件
-- 內建 NIST StRD (Norris 數據集) 與 R 語言 `cor.test`、`anscombe`、帶 tie 的斯皮爾曼基準。
-- 於瀏覽器中提供即時測試檢驗面板，供研究人員與師生親自檢視計算誤差與容許值。
+<p align="center">
+  <a href="https://github.com/ReiKama414/correlation-atlas">GitHub Repository</a> ·
+  <a href="https://reikama414.vercel.app/">Portfolio Site</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#tech-stack">Tech Stack</a> ·
+  <a href="#testing--standard-verification">Verification</a> ·
+  <a href="#license--permissions">License</a>
+</p>
 
 ---
 
-### 7. 📱 響應式佈局 (RWD) 與黑白雙主題 (Dual-Theme)
-- **9 大 Viewport 完整驗證**：320px、375px、390px、430px (手機)、768px (平板直向)、1024px (平板橫向)、1280px (筆電)、1440px (桌面)、1920px (大型螢幕)。
-- **絕對零跑版保證**：全頁面無非預期橫向捲軸 (`scrollWidth <= innerWidth`)，表格與圖表具備獨立響應容器。
-- **手機版抽屜式導覽 (Mobile Drawer)**：窄螢幕 (< 1024px) 參數面板自動轉為觸控優化抽屜，確保圖表分析主視覺完整呈現。
-- **System / Light / Dark 雙主題**：
-  - 預設跟隨作業系統 `prefers-color-scheme` 即時切換。
-  - 支援手動鎖定 Light 或 Dark 模式並持久化於 `localStorage`。
-  - 圖表、熱圖、軸線、工具提示與卡片色彩皆無縫適應黑白雙模式。
+## Why Correlation Atlas
+
+In empirical data science and statistics education, practitioners often face two persistent challenges: correlation matrices are frequently accepted uncritically as end-point conclusions without investigating non-causal confounding or Simpson's paradox, and full statistical software packages (such as R or Python ecosystems) require complex local setup, while lightweight online tools rarely provide NIST-level precision benchmarks, dual confidence bands, or robust outlier diagnostics.
+
+Correlation Atlas delivers a zero-server, verified statistical studio running directly in the browser. Users simply drag and drop CSV files to immediately perform high-precision exploratory data analysis (EDA), regression diagnostics, and paradox detection.
 
 ---
 
-## 🛠️ 技術棧 (Tech Stack)
+## Key Highlights
 
-- **前端核心**：React 19 + TypeScript
-- **建置工具**：Vite 8
-- **圖表引擎**：Apache ECharts 6 + 原生 SVG 雙引擎
-- **本地儲存**：IndexedDB (`idb` v8)
-- **樣式系統**：Tailwind CSS v4 (專業黑白/Slate雙主題)
-- **單元測試**：Vitest 5 (11 項統計與解析測試全部通過)
-- **端到端測試**：Playwright 1.64 (14 項主要流程與 9 Viewport RWD/主題切換測試全部通過)
+- **Multi-Dimensional Correlation Heatmap** — Compute Pearson linear and Spearman rank correlation matrices with full symmetric, lower triangular, and upper triangular views, enhanced by Clustered Seriation hierarchical reordering.
+- **Bivariate Scatter & OLS Regression** — Ordinary Least Squares (OLS) line fitting with real-time slope $\beta_1$, intercept $\beta_0$, coefficient of determination $R^2$, standard error of slope SE($\beta$), and two-tailed $t$-test $p$-values.
+- **Dual Statistical Bands & Residuals** — Render concurrent 95% Confidence Bands (for expected conditional mean) and 95% Prediction Bands (for individual observations), alongside one-click Residual Plot diagnostics for homoscedasticity.
+- **Multi-Algorithm Outlier Diagnostics** — Identify high-leverage points and residuals with Cook's Distance ($D_i > 4/n$), Tukey's IQR fences ($1.5 \times \text{IQR}$), and standardized Z-Scores ($|Z| > 2.5$), with dynamic exclusion toggles.
+- **Automated Simpson's Paradox Detection** — Continuous multi-group monitoring compares macro correlation trends against sub-group associations, alerting researchers whenever group directions invert.
+- **NIST & R Reference Benchmarks** — Built-in NIST StRD suites (Norris, Pontius, NoInt1) and R `cor.test` test cases allowing live in-browser numeric precision verification to $< 10^{-5}$ tolerance.
+- **Dual Visualization Engines** — Seamless switching between Apache ECharts (for smooth panning, zooming, and brush selection) and native SVG (for lossless vector exports), with high-DPI PNG and configuration JSON sharing.
+- **Local Persistence & Zero Data Leakage** — Client-side sandboxed IndexedDB storage maintains custom datasets and analysis snapshots completely offline without server telemetry, cookies, or cloud dependencies.
+- **Strict Zero-Overlap Document Flow & 9 Viewports RWD** — Engineered layout hierarchy (Header $\rightarrow$ Description $\rightarrow$ Metric Cards $\rightarrow$ Chart Area $\rightarrow$ Dedicated Legend & Footer) certified across 320px to 1920px viewports with zero horizontal overflow.
+- **Reactive Dual-Theme Engine** — Automatic system theme tracking with manual System, Light, and Dark mode toggles, featuring high-contrast palettes and glare-free backgrounds.
 
 ---
 
-## 🚀 本地開發、建置與測試
+## Tech Stack
+
+| Category | Technology | Purpose |
+| --- | --- | --- |
+| Core Framework | React 19 · TypeScript 6 | Component architecture with strict type safety |
+| Build Tool | Vite 8 | Fast HMR and optimized production bundling |
+| Styling System | Tailwind CSS 4 | Design tokens and dual-theme variable management |
+| Visualization | Apache ECharts 6 · Native SVG | Dual-engine rendering for interactive zoom and vector export |
+| Local Database | IndexedDB (`idb` v8) · Web Storage | Sandboxed offline storage for datasets and snapshots |
+| Data Ingestion | PapaParse 5 | Streaming CSV parser with delimiter auto-detection and missing value handling |
+| Unit Testing | Vitest 5 | Precision numerical testing for statistics and matrix math |
+| E2E Testing | Playwright 1.64 | 25 automated tests covering flows, 9 viewports, and zero-overlap integrity |
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 20+
+- Modern web browser supporting ES2022 and WebGL/Canvas
+
+### Local Development
 
 ```bash
-# 1. 安裝相依套件
+# Clone the repository
+git clone https://github.com/ReiKama414/correlation-atlas.git
+cd correlation-atlas
+
+# Install dependencies
 npm install
 
-# 2. 啟動開發伺服器
+# Start development server
 npm run dev
+```
 
-# 3. 執行統計計算與解析單元測試 (Vitest)
-npm test
+Navigate to the localhost URL displayed in the terminal (typically `http://localhost:5173/`).
 
-# 4. 執行主要互動流程端到端測試 (Playwright E2E)
-npm run test:e2e
+### Production Build & Preview
 
-# 5. 生產環境編譯打包
+```bash
+# Execute TypeScript checking and build
 npm run build
+
+# Preview production build locally
+npm run preview
 ```
 
 ---
 
-## 🌐 部署設定 (GitHub Pages)
+## Testing & Standard Verification
 
-本專案已在 `vite.config.ts` 設定 `base: './'`，並在 `.github/workflows/deploy.yml` 提供 GitHub Actions 自動部署：
+The codebase treats mathematical correctness and layout integrity as foundational requirements, validated through automated test suites:
 
-1. 將程式碼推送到 GitHub 儲存庫 `main` 或 `master` 分支。
-2. 前往儲存庫 **Settings** ➔ **Pages**。
-3. 將 **Source** 設定為 **GitHub Actions**。
-4. 每次 push 後將自動執行測試、建置並發布至 GitHub Pages。
+| Test Suite | Command | Scope |
+| --- | --- | --- |
+| Unit Tests | `npm test` | Vitest testing of Pearson, Spearman, OLS parameters, CI/PI bands, Cook's D, IQR, and CSV parser edge cases |
+| E2E Verification | `npm run test:e2e` | Playwright test suite running 25 browser tests across core user flows, 9 viewports, and theme switches |
+| Zero-Overlap Audit | `npx playwright test e2e/zero-overlap.spec.ts` | Bounding box non-intersection verification and 200% font zoom stress tests |
+| NIST StRD Suite | UI "驗證跑分" Button | Real-time browser benchmark testing against official NIST Norris, Pontius, NoInt1, and Anscombe datasets |
 
 ---
 
-## ⚠️ 已知限制與說明 (Known Limitations)
+## Project Structure
 
-1. **瀏覽器單執行緒運算量**：雖然系統已針對數萬筆資料進行效能優化，但若 CSV 超過 50,000 筆，為維持流暢的 60fps 拖曳與渲染，系統將提示並採樣前 50,000 筆資料。
-2. **本地儲存容量**：IndexedDB 儲存空間受瀏覽器磁碟配額限制（通常為數百 MB 至數 GB，對於一般表格研究數據極為充裕）。
-3. **雲端協作需求說明**：目前採用完全去中心化的「純前端 + 本地 IndexedDB + URL Hash」機制。如未來需要團隊多租戶即時同步，需額外配合後端關聯資料庫（例如 PostgreSQL）或物件儲存服務（S3）。
+```
+correlation-atlas/
+├── .github/workflows/       # GitHub Actions automated deployment
+├── e2e/                     # Playwright end-to-end and layout test specifications
+│   ├── app.spec.ts          # Core interaction flow tests
+│   ├── rwd-theme.spec.ts    # 9 Viewports RWD and dual-theme tests
+│   └── zero-overlap.spec.ts # Bounding box non-intersection audit
+├── src/
+│   ├── components/          # UI components (ScatterPlot, Matrix, Modals, Banner, Sidebar)
+│   ├── data/                # Sample datasets (Penguins, Anscombe, Iris, Ice Cream, etc.)
+│   ├── utils/               # Pure TypeScript statistical and data modules
+│   │   ├── statistics.ts    # Mathematical core (OLS, Pearson, Spearman, Outliers, Simpson's)
+│   │   ├── csvParser.ts     # Resilient CSV parser and type inference
+│   │   ├── db.ts            # IndexedDB sandbox wrapper
+│   │   ├── theme.ts         # Reactive theme management
+│   │   └── colors.ts        # Contrast calculations and heatmap color palettes
+│   ├── App.tsx              # Main studio workbench container
+│   └── main.tsx             # Application bootstrap entry
+├── LICENSE                  # Project license
+├── package.json             # Manifest and dependencies
+├── README.md                # English documentation
+└── README.zh-TW.md          # Traditional Chinese documentation
+```
+
+---
+
+## Built-in Datasets
+
+The studio includes curated econometric and biological datasets for exploration:
+
+1. **Palmer Penguins** — Iconic Simpson's paradox case (negative overall bill length vs depth correlation, inverted to strong positive correlation within Adelie, Chinstrap, and Gentoo sub-species).
+2. **Anscombe's Quartet** — Four distinct datasets with identical linear means, variances, correlations ($r = 0.816$), and regression lines ($y = 3.0 + 0.5x$), demonstrating the necessity of visual scatter inspection.
+3. **Spurious Ice Cream** — Classic spurious correlation case driven by an unobserved confounder (ambient summer temperature).
+4. **Fisher's Iris** — Multivariate continuous morphological measurements across species.
+5. **World Happiness** — Empirical cross-national relationship between economic GDP, social support, and healthy life expectancy.
+6. **Marketing ROI** — Digital advertising budget allocations versus enterprise revenue outcomes.
+
+---
+
+## Static Deployment
+
+As a pure client-side Single Page Application (SPA), Correlation Atlas deploys natively to any static hosting provider:
+
+### GitHub Pages
+
+1. Push code to the repository `main` branch.
+2. In repository **Settings** $\rightarrow$ **Pages**, set **Source** to **GitHub Actions**.
+3. Automated GitHub Actions will test, bundle, and publish the application upon push.
+
+### Vercel / Cloudflare Pages
+
+- Framework Preset: **Vite**
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- No server-side environment secrets or external services required.
+
+---
+
+## Data Privacy & Local Storage
+
+- **100% Client-Side Execution** — Calculations execute strictly within the browser thread; no researcher data is ever transmitted across external networks.
+- **IndexedDB Isolation** — Imported CSV files and custom snapshots reside exclusively inside the browser's origin-isolated IndexedDB sandbox.
+- **Stateless Sharing** — Workspace sharing operates via URL hash fragments or client-side JSON files without logging or server persistence.
+
+---
+
+## Known Limitations
+
+- **Large Dataset Batch Sampling** — To preserve 60 FPS rendering and smooth brush interactions, datasets exceeding 50,000 rows display a prompt and trigger uniform sampling.
+- **Browser Disk Quotas** — Local IndexedDB storage capacity is bounded by browser-allotted disk quotas. Cross-device work is facilitated via JSON workspace export.
+- **Inference Assumptions** — Parametric hypothesis testing presumes normal distributed errors; empirical findings should always be paired with domain-specific causal directed acyclic graphs (DAGs).
+
+---
+
+## License / Permissions
+
+Copyright (c) 2026 ReiKama414. All rights reserved.
+
+This project is provided solely for personal viewing and learning purposes. No permission is granted to use, copy, modify, distribute, sublicense, or incorporate this software into other projects (commercial or non-commercial) without express written consent.
+
+- [GitHub Repository](https://github.com/ReiKama414/correlation-atlas)
+- [Portfolio Site](https://reikama414.vercel.app/)
+- [Full License](./LICENSE)
+
+---
+
+<sub>Built with craftsmanship by <a href="https://github.com/ReiKama414">ReiKama414</a> · Correlation Atlas</sub>
