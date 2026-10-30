@@ -4,7 +4,6 @@ import {
   TrendingUp,
   Activity,
   Layers,
-  Sparkles,
   Flame,
   Download,
   RotateCcw,
@@ -604,9 +603,8 @@ export const EChartsScatterPlot: React.FC<EChartsScatterPlotProps> = ({
 
         {/* Metric 3: P-Value */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-3.5 space-y-1 shadow-xs transition-colors">
-          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-            <span>顯著性 p-value</span>
-            <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+            顯著性 p-value
           </div>
           <div className="text-xs sm:text-sm font-bold font-mono text-slate-900 dark:text-white mt-1">
             {formatPValue(activeCorrelation.pValue)}
