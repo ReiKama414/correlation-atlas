@@ -206,5 +206,11 @@ test.describe('ZERO-OVERLAP & LAYOUT INTEGRITY VERIFICATION', () => {
       await page.waitForTimeout(200);
     }
     await page.screenshot({ path: 'test-results/screenshot-1280-desktop-dark.png' });
+
+    // Test Schema table in 1280px Desktop Dark Mode
+    await page.click('button:has-text("資料結構")');
+    await expect(page.locator('text=變數資料結構與描述統計總覽')).toBeVisible();
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: 'test-results/screenshot-schema-1280-dark.png' });
   });
 });

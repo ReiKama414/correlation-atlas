@@ -112,19 +112,19 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
   const allPassed = hasRun && Object.values(results).every((r) => r.passed);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 sm:p-4">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl text-slate-800 dark:text-slate-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl text-zinc-800 dark:text-zinc-200">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-200 dark:border-emerald-500/30">
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-200 dark:border-emerald-800/60">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                 統計函式數值驗證套件 (NIST & R Reference Benchmarks)
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 可驗證的純 TypeScript 統計函式庫，與美國國家標準局 (NIST StRD) 及 R 官方數值交叉檢驗
               </p>
             </div>
@@ -133,18 +133,18 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
           <button
             onClick={onClose}
             aria-label="關閉驗證視窗"
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Action Bar */}
-        <div className="px-4 sm:px-5 py-3 bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div className="px-4 sm:px-5 py-3 bg-zinc-50 dark:bg-zinc-950/60 border-b border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-2 text-xs">
           <div className="flex items-center gap-2">
             <button
               onClick={runAllTests}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium cursor-pointer transition-colors shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-semibold cursor-pointer transition-colors shadow-xs"
             >
               <Play className="w-3.5 h-3.5" />
               <span>{hasRun ? '重新執行所有驗證' : '立即執行驗證測試 (Run All)'}</span>
@@ -154,8 +154,8 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
               <span
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-semibold ${
                   allPassed
-                    ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40'
-                    : 'bg-rose-50 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60'
+                    : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60'
                 }`}
               >
                 {allPassed ? (
@@ -171,7 +171,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
             )}
           </div>
 
-          <div className="text-slate-500 dark:text-slate-400 hidden sm:block">
+          <div className="text-zinc-500 dark:text-zinc-400 hidden sm:block">
             包含 OLS 斜率/截距、Fisher's z CI、Tie-corrected 等級排名、Simpson 悖論檢驗
           </div>
         </div>
@@ -184,25 +184,25 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
             return (
               <div
                 key={tc.id}
-                className="bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3 shadow-sm"
+                className="bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-3 shadow-xs"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-slate-900 dark:text-white text-sm">{tc.name}</span>
-                      <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30">
+                      <span className="font-bold text-zinc-900 dark:text-zinc-100 text-sm">{tc.name}</span>
+                      <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
                         {tc.category}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{tc.description}</p>
-                    <div className="text-[11px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{tc.description}</p>
+                    <div className="text-[11px] text-zinc-400 dark:text-zinc-500 font-mono mt-0.5">
                       參考標準: {tc.referenceSource}
                     </div>
                   </div>
 
                   <div>
                     {!run ? (
-                      <span className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-900 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-800">
+                      <span className="text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-md border border-zinc-200 dark:border-zinc-700">
                         待執行
                       </span>
                     ) : run.passed ? (
@@ -218,15 +218,15 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                 </div>
 
                 {/* Benchmark Comparison Table */}
-                <div className="bg-white dark:bg-slate-900/60 rounded-lg p-3 text-xs font-mono space-y-1.5 border border-slate-200 dark:border-slate-800/60">
-                  <div className="text-[11px] font-sans font-semibold text-slate-500 dark:text-slate-400">
+                <div className="bg-white dark:bg-zinc-900 rounded-lg p-3 text-xs font-mono space-y-1.5 border border-zinc-200 dark:border-zinc-800">
+                  <div className="text-[11px] font-sans font-semibold text-zinc-500 dark:text-zinc-400">
                     數值比對 (Reference vs Computed):
                   </div>
 
                   {tc.expected.slope !== undefined && (
-                    <div className="flex justify-between border-b border-slate-200 dark:border-slate-800/60 pb-1">
-                      <span className="text-slate-500 dark:text-slate-400">線性回歸斜率 (Slope β₁):</span>
-                      <span className="text-slate-700 dark:text-slate-300">
+                    <div className="flex justify-between border-b border-zinc-200 dark:border-zinc-800 pb-1">
+                      <span className="text-zinc-500 dark:text-zinc-400">線性回歸斜率 (Slope β₁):</span>
+                      <span className="text-zinc-700 dark:text-zinc-300">
                         基準: {tc.expected.slope} | 本地運算:{' '}
                         <strong className="text-emerald-600 dark:text-emerald-400">
                           {run ? formatNumber(run.actualValues.slope as number, 8) : '—'}
@@ -236,9 +236,9 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                   )}
 
                   {tc.expected.intercept !== undefined && (
-                    <div className="flex justify-between border-b border-slate-200 dark:border-slate-800/60 pb-1">
-                      <span className="text-slate-500 dark:text-slate-400">回歸截距 (Intercept β₀):</span>
-                      <span className="text-slate-700 dark:text-slate-300">
+                    <div className="flex justify-between border-b border-zinc-200 dark:border-zinc-800 pb-1">
+                      <span className="text-zinc-500 dark:text-zinc-400">回歸截距 (Intercept β₀):</span>
+                      <span className="text-zinc-700 dark:text-zinc-300">
                         基準: {tc.expected.intercept} | 本地運算:{' '}
                         <strong className="text-emerald-600 dark:text-emerald-400">
                           {run ? formatNumber(run.actualValues.intercept as number, 8) : '—'}
@@ -248,9 +248,9 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                   )}
 
                   {tc.expected.r !== undefined && (
-                    <div className="flex justify-between border-b border-slate-200 dark:border-slate-800/60 pb-1">
-                      <span className="text-slate-500 dark:text-slate-400">相關係數 (r / ρ):</span>
-                      <span className="text-slate-700 dark:text-slate-300">
+                    <div className="flex justify-between border-b border-zinc-200 dark:border-zinc-800 pb-1">
+                      <span className="text-zinc-500 dark:text-zinc-400">相關係數 (r / ρ):</span>
+                      <span className="text-zinc-700 dark:text-zinc-300">
                         基準: {tc.expected.r} | 本地運算:{' '}
                         <strong className="text-emerald-600 dark:text-emerald-400">
                           {run ? formatNumber(run.actualValues.r as number, 7) : '—'}
@@ -260,9 +260,9 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                   )}
 
                   {tc.id === 'simpson-penguins' && (
-                    <div className="flex justify-between border-b border-slate-200 dark:border-slate-800/60 pb-1">
-                      <span className="text-slate-500 dark:text-slate-400">辛普森悖論偵測旗標:</span>
-                      <span className="text-slate-700 dark:text-slate-300">
+                    <div className="flex justify-between border-b border-zinc-200 dark:border-zinc-800 pb-1">
+                      <span className="text-zinc-500 dark:text-zinc-400">辛普森悖論偵測旗標:</span>
+                      <span className="text-zinc-700 dark:text-zinc-300">
                         預期: true | 本地運算:{' '}
                         <strong className="text-emerald-600 dark:text-emerald-400">
                           {run ? String(run.actualValues.isParadoxDetected) : '—'}
@@ -272,7 +272,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                   )}
 
                   {tc.expected.notes && (
-                    <div className="text-[11px] font-sans text-slate-500 dark:text-slate-400 pt-1">
+                    <div className="text-[11px] font-sans text-zinc-500 dark:text-zinc-400 pt-1">
                       備註：{tc.expected.notes}
                     </div>
                   )}

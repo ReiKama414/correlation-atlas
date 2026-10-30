@@ -3,6 +3,7 @@ import { useTheme } from './utils/theme';
 import { Navbar } from './components/Navbar';
 import { CausationBanner } from './components/CausationBanner';
 import { Sidebar } from './components/Sidebar';
+import { StatusBar } from './components/StatusBar';
 import { EChartsScatterPlot } from './components/EChartsScatterPlot';
 import { ScatterPlot } from './components/ScatterPlot';
 import { EChartsMatrix } from './components/EChartsMatrix';
@@ -392,8 +393,24 @@ export function App() {
     if (cfg.filters) setFilters(cfg.filters);
   };
 
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (!parsedData) return 0;
+    Object.keys(filters.numeric).forEach((col) => {
+      const meta = parsedData.columns.find((c) => c.name === col);
+      if (meta && meta.min !== undefined && meta.max !== undefined) {
+        const r = filters.numeric[col];
+        if (r[0] > meta.min || r[1] < meta.max) count++;
+      }
+    });
+    Object.keys(filters.categorical).forEach((_col) => {
+      count++;
+    });
+    return count;
+  }, [filters, parsedData]);
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-150">
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-150">
       {/* Top Navigation */}
       <Navbar
         currentDatasetId={currentDatasetId}
@@ -418,7 +435,7 @@ export function App() {
 
       {/* CSV Parser Warnings (e.g. large file truncation notice) */}
       {csvWarnings.length > 0 && (
-        <div className="bg-amber-100 dark:bg-amber-950 border-b border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-200 px-4 py-2 text-xs flex items-center justify-between">
+        <div className="bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 px-4 py-2 text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span>⚠️ {csvWarnings.join('；')}</span>
           </div>
@@ -442,7 +459,7 @@ export function App() {
       />
 
       {/* Main Layout Area */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-screen-2xl w-full mx-auto min-w-0">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-[1700px] w-full mx-auto min-w-0">
         {/* Left Control Sidebar */}
         {parsedData && (
           <Sidebar
@@ -590,29 +607,29 @@ export function App() {
               {/* Tab 4: Benchmark Tests */}
               {activeTab === 'verification' && (
                 <div className="space-y-4">
-                  <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-sm">
+                  <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs">
                     <div>
-                      <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                      <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                         數值基準檢驗套件 (NIST StRD & R Benchmarks)
                       </h2>
-                      <p className="text-slate-500 dark:text-slate-400 mt-0.5">
+                      <p className="text-zinc-500 dark:text-zinc-400 mt-0.5">
                         即時運行美國國家標準局 (NIST) 與 R 語言標準參考資料集，全面驗證線性回歸、相關係數與辛普森悖論之數值精度。
                       </p>
                     </div>
                     <button
                       onClick={() => setIsVerificationModalOpen(true)}
-                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded font-medium cursor-pointer shadow-sm transition-colors whitespace-nowrap"
+                      className="px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg font-semibold cursor-pointer shadow-xs transition-colors whitespace-nowrap"
                     >
                       開啟驗證視窗
                     </button>
                   </div>
-                  <div className="p-8 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-3 shadow-sm">
-                    <p className="text-slate-700 dark:text-slate-300 text-xs">
+                  <div className="p-8 text-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl space-y-3 shadow-xs">
+                    <p className="text-zinc-700 dark:text-zinc-300 text-xs">
                       所有統計演算法皆完全在純 TypeScript 內部實作，不依賴外部不透明 API：
                     </p>
                     <button
                       onClick={() => setIsVerificationModalOpen(true)}
-                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold cursor-pointer shadow-md transition-colors"
+                      className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg text-xs font-semibold cursor-pointer shadow-xs transition-colors"
                     >
                       🚀 執行 NIST / R 統計基準驗證
                     </button>
@@ -623,6 +640,17 @@ export function App() {
           )}
         </main>
       </div>
+
+      {/* Bottom Status Bar (Workstation Footer like insight-canvas) */}
+      <StatusBar
+        totalRows={parsedData?.rowCount || 0}
+        validRows={validCount}
+        missingRows={missingCount}
+        variableCount={parsedData?.columns.length || 0}
+        chartEngine={chartEngine}
+        onChangeChartEngine={setChartEngine}
+        activeFilterCount={activeFilterCount}
+      />
 
       {/* Modals */}
       <VerificationModal

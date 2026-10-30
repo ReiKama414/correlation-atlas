@@ -13,8 +13,8 @@ test.describe('Correlation Atlas End-to-End Interaction Flows', () => {
     await expect(page.locator('text=工作台').first()).toBeVisible();
 
     // Check sample size badges
-    await expect(page.locator('text=總樣本數:')).toBeVisible();
-    await expect(page.locator('text=有效分析樣本:')).toBeVisible();
+    await expect(page.locator('text=總樣本數:').first()).toBeVisible();
+    await expect(page.locator('text=有效分析樣本:').first()).toBeVisible();
 
     // Check that Simpson's Paradox alert is automatically flagged for Penguins
     await expect(page.locator('text=偵測到辛普森悖論')).toBeVisible();
