@@ -851,42 +851,42 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
           </div>
 
           <div className="overflow-x-auto -mx-1 px-1">
-            <table className="w-full text-xs text-left min-w-[550px]">
+            <table className="w-full text-xs text-left min-w-[620px]">
               <thead className="bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 font-medium">
                 <tr>
-                  <th className="py-2 px-3 rounded-l-lg">分組 (Group)</th>
-                  <th className="py-2 px-3">樣本數 (n)</th>
-                  <th className="py-2 px-3">相關係數 (r)</th>
-                  <th className="py-2 px-3">判定係數 (R²)</th>
-                  <th className="py-2 px-3">斜率 (Slope β₁)</th>
-                  <th className="py-2 px-3">截距 (β₀)</th>
-                  <th className="py-2 px-3 rounded-r-lg">顯著性 (p-value)</th>
+                  <th className="py-2.5 px-3 rounded-l-lg whitespace-nowrap">分組 (Group)</th>
+                  <th className="py-2.5 px-3 whitespace-nowrap">樣本數 (n)</th>
+                  <th className="py-2.5 px-3 whitespace-nowrap">相關係數 (r)</th>
+                  <th className="py-2.5 px-3 whitespace-nowrap">判定係數 (R²)</th>
+                  <th className="py-2.5 px-3 whitespace-nowrap">斜率 (Slope β₁)</th>
+                  <th className="py-2.5 px-3 whitespace-nowrap">截距 (β₀)</th>
+                  <th className="py-2.5 px-3 rounded-r-lg whitespace-nowrap">顯著性 (p-value)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800 font-mono">
                 {groupRegressions.map((gr) => (
                   <tr key={`gr-row-${gr.group}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                    <td className="py-2.5 px-3 font-semibold flex items-center gap-2 font-sans">
+                    <td className="py-2.5 px-3 font-semibold flex items-center gap-2 font-sans whitespace-nowrap">
                       <span
                         className="w-2.5 h-2.5 rounded-full shrink-0"
                         style={{ backgroundColor: gr.color }}
                       ></span>
-                      <span className="text-slate-900 dark:text-white truncate max-w-[120px]">{gr.group}</span>
+                      <span className="text-slate-900 dark:text-white truncate max-w-[140px]">{gr.group}</span>
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300">{gr.count}</td>
-                    <td className="py-2.5 px-3 font-bold text-indigo-600 dark:text-indigo-300">
+                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">{gr.count}</td>
+                    <td className="py-2.5 px-3 font-bold text-indigo-600 dark:text-indigo-300 whitespace-nowrap">
                       {formatNumber(gr.correlation.r, 3)}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300">
+                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">
                       {formatNumber(gr.regression.rSquared, 3)}
                     </td>
-                    <td className="py-2.5 px-3 text-emerald-600 dark:text-emerald-400">
+                    <td className="py-2.5 px-3 text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
                       {formatNumber(gr.regression.slope, 3)}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300">
+                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">
                       {formatNumber(gr.regression.intercept, 3)}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300">
+                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">
                       {formatPValue(gr.correlation.pValue)}
                     </td>
                   </tr>

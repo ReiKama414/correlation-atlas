@@ -270,7 +270,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         />
                         <span className="font-medium text-slate-800 dark:text-slate-200 truncate">{c.name}</span>
                       </div>
-                      <span className="text-[10px] text-slate-400 font-mono">
+                      <span className="text-[10px] text-slate-400 font-mono shrink-0 whitespace-nowrap ml-2">
                         {c.missingCount > 0 ? `缺${c.missingCount}` : '完整'}
                       </span>
                     </label>

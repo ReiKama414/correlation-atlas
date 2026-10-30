@@ -30,7 +30,7 @@ export const CausationBanner: React.FC<CausationBannerProps> = ({
 
   return (
     <div className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 transition-colors">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-2">
+      <div className="max-w-screen-2xl mx-auto px-2 sm:px-4 lg:px-6 py-2">
         {/* Simpson's Paradox Alert Banner */}
         {simpsonsParadox?.isDetected && (
           <div className="mb-2 bg-rose-50 dark:bg-rose-950/80 border border-rose-300 dark:border-rose-800 rounded-lg p-2.5 sm:p-3 text-rose-900 dark:text-rose-200 shadow-xs flex items-start gap-2.5">

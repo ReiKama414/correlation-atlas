@@ -442,7 +442,7 @@ export function App() {
       />
 
       {/* Main Layout Area */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-7xl w-full mx-auto min-w-0">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-screen-2xl w-full mx-auto min-w-0">
         {/* Left Control Sidebar */}
         {parsedData && (
           <Sidebar
