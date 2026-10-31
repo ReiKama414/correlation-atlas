@@ -126,22 +126,28 @@ test.describe('Responsive Web Design (9 Viewports) & Dual-Theme Verification', (
         await expect(page.locator('aside')).toBeVisible();
       }
 
-      // 6. Modal Test at this viewport
-      // Open Causation Guide Modal
-      const causationBtn = page.locator('button:has-text("展開因果說明")').first();
-      if (await causationBtn.isVisible()) {
-        await causationBtn.click();
-        await expect(page.locator('text=「相關不代表因果 (Correlation ≠ Causation)」研究者手冊')).toBeVisible();
+      // 6. Modal Test at this viewport — open Causation Guide (not banner accordion)
+      let causationGuideBtn = page.locator('button:has-text("因果指南")').first();
+      if (!(await causationGuideBtn.isVisible())) {
+        const menuBtn = page.locator('button[aria-label="選單開關"]').first();
+        if (await menuBtn.isVisible()) {
+          await menuBtn.click();
+          causationGuideBtn = page.locator('button:has-text("因果指南")').first();
+        }
+      }
+      if (await causationGuideBtn.isVisible()) {
+        await causationGuideBtn.click();
+        const modal = page.locator('[role="dialog"]').filter({ hasText: '研究者手冊' });
+        await expect(modal).toBeVisible();
 
-        // Verify modal bounding box does not exceed viewport
-        const modalBox = await page.locator('div[role="dialog"], .fixed.inset-0 > div').first().boundingBox();
+        const modalBox = await modal.boundingBox();
         if (modalBox) {
           expect(modalBox.x).toBeGreaterThanOrEqual(0);
           expect(modalBox.x + modalBox.width).toBeLessThanOrEqual(vp.width + 10);
         }
 
-        // Close modal
-        await page.locator('button:has-text("我瞭解了，回到研究分析")').click();
+        await modal.getByRole('button', { name: '關閉因果手冊' }).click();
+        await expect(modal).not.toBeVisible();
       }
 
       // Assert zero console/page errors

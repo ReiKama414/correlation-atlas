@@ -315,9 +315,9 @@ export const EChartsMatrix: React.FC<EChartsMatrixProps> = ({
         data-testid="matrix-header"
         className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs shadow-xs"
       >
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 data-testid="matrix-title" className="font-bold text-zinc-900 dark:text-zinc-100 text-sm">
+        <div className="min-w-0 flex-1 basis-full lg:basis-auto">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h2 data-testid="matrix-title" className="font-bold text-zinc-900 dark:text-zinc-100 text-sm min-w-0">
               ECharts 相關係數矩陣熱圖 ({correlationMethod === 'spearman' ? 'Spearman ρ' : 'Pearson r'})
             </h2>
             <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">

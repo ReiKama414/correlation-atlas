@@ -77,9 +77,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-40 select-none transition-colors">
-      <div className="max-w-[1700px] mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2 sm:gap-4 min-w-0">
+      <div className="max-w-[1700px] mx-auto px-3 sm:px-4 py-2.5 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-4 min-w-0">
         {/* Brand / Logo */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 basis-[min(100%,12rem)]">
           <div className="p-1.5 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-lg flex items-center justify-center shrink-0">
             <Compass className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
@@ -88,7 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="font-bold text-sm sm:text-base tracking-tight font-mono truncate text-zinc-900 dark:text-zinc-100">
                 Correlation Atlas
               </span>
-              <span className="text-[10px] uppercase font-semibold tracking-wider px-1.5 py-0.2 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 rounded shrink-0 inline-block">
+              <span className="hidden sm:inline text-[10px] uppercase font-semibold tracking-wider px-1.5 py-0.2 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 rounded shrink-0">
                 工作台
               </span>
             </div>
@@ -154,14 +154,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Mobile Sidebar / Filter Drawer Trigger */}
           <button
             onClick={onToggleMobileSidebar}
-            className="lg:hidden flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 px-2 py-1.5 rounded text-xs font-medium cursor-pointer"
+            className="lg:hidden flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 px-2 py-1.5 rounded text-xs font-medium cursor-pointer shrink-0"
             title="展開參數設定與篩選抽屜"
+            aria-label={`展開參數設定與篩選 (${xVar} × ${yVar})`}
           >
-            <SlidersHorizontal className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-            <span className="hidden xs:inline">參數篩選</span>
-            <span className="font-mono text-[10px] max-w-[70px] truncate text-zinc-600 dark:text-zinc-400">
-              ({xVar}×{yVar})
-            </span>
+            <SlidersHorizontal className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
+            <span className="hidden min-[380px]:inline">參數篩選</span>
           </button>
 
           {/* Desktop Modals & Actions */}
@@ -364,7 +362,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             <BarChart2 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${activeTab === 'scatter' ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400 dark:text-zinc-500'}`} />
-            <span>散佈圖與回歸 (Scatter)</span>
+            <span>散佈圖與回歸</span>
+            <span className="hidden min-[420px]:inline"> (Scatter)</span>
           </button>
           <button
             onClick={() => setActiveTab('matrix')}
@@ -375,7 +374,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             <Grid className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${activeTab === 'matrix' ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400 dark:text-zinc-500'}`} />
-            <span>相關矩陣 (Matrix)</span>
+            <span>相關矩陣</span>
+            <span className="hidden min-[420px]:inline"> (Matrix)</span>
           </button>
           <button
             onClick={() => setActiveTab('variables')}
@@ -386,7 +386,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             <Table className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${activeTab === 'variables' ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400 dark:text-zinc-500'}`} />
-            <span>資料結構 (Schema)</span>
+            <span>資料結構</span>
+            <span className="hidden min-[420px]:inline"> (Schema)</span>
           </button>
           <button
             onClick={() => setActiveTab('verification')}
@@ -397,7 +398,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             <Sliders className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${activeTab === 'verification' ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400 dark:text-zinc-500'}`} />
-            <span>基準測試 (Benchmark)</span>
+            <span>基準測試</span>
+            <span className="hidden min-[420px]:inline"> (Benchmark)</span>
           </button>
         </div>
       </nav>

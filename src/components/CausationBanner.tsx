@@ -48,24 +48,26 @@ export const CausationBanner: React.FC<CausationBannerProps> = ({
               <p className="mt-1 text-zinc-700 dark:text-zinc-300 leading-relaxed text-[11px] sm:text-xs">
                 {simpsonsParadox.description}
               </p>
-              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
-                <span className="bg-white dark:bg-zinc-900 px-2 py-0.5 rounded text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 font-mono">
-                  整體: <strong className={simpsonsParadox.overallR > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-blue-600 dark:text-blue-400'}>
-                    r = {simpsonsParadox.overallR.toFixed(3)}
-                  </strong>
-                </span>
-                <span className="text-zinc-500 dark:text-zinc-400 text-[10px]">分組內部:</span>
-                {simpsonsParadox.groupResults.slice(0, 3).map((g) => (
-                  <span
-                    key={g.group}
-                    className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
-                  >
-                    {g.group}: r={g.r.toFixed(2)}
+              <div className="mt-2 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 text-[11px]">
+                <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+                  <span className="bg-white dark:bg-zinc-900 px-2 py-0.5 rounded text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 font-mono shrink-0">
+                    整體: <strong className={simpsonsParadox.overallR > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-blue-600 dark:text-blue-400'}>
+                      r = {simpsonsParadox.overallR.toFixed(3)}
+                    </strong>
                   </span>
-                ))}
+                  <span className="text-zinc-500 dark:text-zinc-400 text-[10px] shrink-0">分組內部:</span>
+                  {simpsonsParadox.groupResults.slice(0, 3).map((g) => (
+                    <span
+                      key={g.group}
+                      className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 shrink-0"
+                    >
+                      {g.group}: r={g.r.toFixed(2)}
+                    </span>
+                  ))}
+                </div>
                 <button
                   onClick={onOpenGuide}
-                  className="ml-auto inline-flex items-center gap-0.5 text-rose-600 dark:text-rose-300 hover:underline font-medium cursor-pointer text-[11px]"
+                  className="w-full sm:w-auto sm:ml-auto inline-flex items-center justify-center sm:justify-start gap-0.5 text-rose-600 dark:text-rose-300 hover:underline font-medium cursor-pointer text-[11px] shrink-0"
                 >
                   深入瞭解 <ArrowRight className="w-3 h-3" />
                 </button>
@@ -75,9 +77,9 @@ export const CausationBanner: React.FC<CausationBannerProps> = ({
         )}
 
         {/* Status Strip & Causation Alert */}
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between text-xs">
           {/* Sample count & missing values badges */}
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 min-w-0">
             <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 text-[11px]">
               <span>總樣本數:</span>
               <strong className="text-zinc-900 dark:text-zinc-100 font-mono">{totalRows}</strong>
@@ -104,17 +106,18 @@ export const CausationBanner: React.FC<CausationBannerProps> = ({
           </div>
 
           {/* Central Scientific Reminder & Accordion Toggle */}
-          <div className="flex items-center gap-1.5">
-            <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded text-xs font-medium">
+          <div className="flex items-stretch sm:items-center gap-1.5 w-full sm:w-auto min-w-0">
+            <div className="flex flex-1 min-w-0 items-center gap-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded text-xs font-medium">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-              <span>「相關不代表因果 (Correlation ≠ Causation)」</span>
+              <span className="min-w-0 leading-snug">「相關不代表因果 (Correlation ≠ Causation)」</span>
             </div>
 
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+              className="shrink-0 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 px-2 py-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer inline-flex items-center gap-1"
               title="展開因果分析重點提醒"
-              aria-label="展開因果說明"
+              aria-label="展開因果分析重點提醒"
+              aria-expanded={isExpanded}
             >
               {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>

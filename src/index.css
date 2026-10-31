@@ -29,7 +29,9 @@
     margin: 0;
     padding: 0;
     width: 100%;
+    max-width: 100%;
     min-height: 100%;
+    overflow-x: clip;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -77,4 +79,14 @@
 /* Prevent unwanted browser touch gestures from bouncing */
 html {
   touch-action: manipulation;
+}
+
+/* Hide scrollbars for horizontal tab strips while keeping scroll */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

@@ -22,15 +22,20 @@ export const CausationGuideModal: React.FC<CausationGuideModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl text-zinc-800 dark:text-zinc-200">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="causation-guide-title"
+        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl text-zinc-800 dark:text-zinc-200 min-w-0"
+      >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/50">
-          <div className="flex items-center gap-3">
+        <div className="flex items-start sm:items-center justify-between gap-3 p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/50 min-w-0">
+          <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
             <div className="p-2 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-xl border border-amber-200 dark:border-amber-800/60">
               <BookOpen className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+              <h2 id="causation-guide-title" className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 min-w-0">
                 「相關不代表因果 (Correlation ≠ Causation)」研究者手冊
               </h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
