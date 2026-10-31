@@ -168,28 +168,28 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="hidden lg:flex items-center gap-2">
             <button
               onClick={onOpenCausationGuide}
-              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-amber-200 dark:border-amber-800/50 rounded transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 rounded shadow-xs transition-all cursor-pointer"
               title="相關不代表因果指南"
             >
-              <BookOpen className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <BookOpen className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
               <span>因果指南</span>
             </button>
 
             <button
               onClick={onOpenVerificationModal}
-              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800/50 rounded transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 rounded shadow-xs transition-all cursor-pointer"
               title="統計驗證基準"
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
               <span>統計驗證</span>
             </button>
 
             <button
               onClick={onOpenShareModal}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 rounded shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 rounded shadow-xs transition-all cursor-pointer"
               title="分享/匯出設定 JSON"
             >
-              <Share2 className="w-3.5 h-3.5" />
+              <Share2 className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
               <span>分享 / JSON</span>
             </button>
           </div>
@@ -295,9 +295,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onOpenCausationGuide();
                 setIsMobileMenuOpen(false);
               }}
-              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 font-medium"
+              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 font-medium transition-colors"
             >
-              <BookOpen className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <BookOpen className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
               <span>因果指南</span>
             </button>
 
@@ -306,9 +306,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onOpenVerificationModal();
                 setIsMobileMenuOpen(false);
               }}
-              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-medium"
+              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 font-medium transition-colors"
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
               <span>統計驗證</span>
             </button>
 
@@ -317,9 +317,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onOpenShareModal();
                 setIsMobileMenuOpen(false);
               }}
-              className="col-span-2 flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 text-white font-medium shadow-xs"
+              className="col-span-2 flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 font-medium transition-colors shadow-xs"
             >
-              <Share2 className="w-3.5 h-3.5" />
+              <Share2 className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
               <span>分享 / 匯出設定 JSON</span>
             </button>
           </div>

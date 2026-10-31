@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { ShieldCheck } from 'lucide-react';
 import { useTheme } from './utils/theme';
 import { Navbar } from './components/Navbar';
 import { CausationBanner } from './components/CausationBanner';
@@ -410,7 +411,7 @@ export function App() {
   }, [filters, parsedData]);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-150">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-150">
       {/* Top Navigation */}
       <Navbar
         currentDatasetId={currentDatasetId}
@@ -500,11 +501,11 @@ export function App() {
         <main className="flex-1 p-3 sm:p-5 overflow-y-auto min-w-0">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center h-96 space-y-2">
-              <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-slate-500 dark:text-slate-400 text-xs">正在載入並解析統計資料庫...</p>
+              <div className="w-6 h-6 border-2 border-zinc-900 dark:border-zinc-100 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-zinc-500 dark:text-zinc-400 text-xs">正在載入並解析統計資料庫...</p>
             </div>
           ) : !parsedData ? (
-            <div className="text-center py-20 text-slate-500 dark:text-slate-400 text-xs">尚無資料，請匯入 CSV 或選擇範例資料集</div>
+            <div className="text-center py-20 text-zinc-500 dark:text-zinc-400 text-xs">尚無資料，請匯入 CSV 或選擇範例資料集</div>
           ) : (
             <>
               {/* Tab 1: Scatter & Regression Studio */}
@@ -618,7 +619,7 @@ export function App() {
                     </div>
                     <button
                       onClick={() => setIsVerificationModalOpen(true)}
-                      className="px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg font-semibold cursor-pointer shadow-xs transition-colors whitespace-nowrap"
+                      className="px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg font-semibold cursor-pointer shadow-xs transition-colors whitespace-nowrap"
                     >
                       開啟驗證視窗
                     </button>
@@ -629,9 +630,10 @@ export function App() {
                     </p>
                     <button
                       onClick={() => setIsVerificationModalOpen(true)}
-                      className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg text-xs font-semibold cursor-pointer shadow-xs transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg text-xs font-semibold cursor-pointer shadow-xs transition-colors"
                     >
-                      🚀 執行 NIST / R 統計基準驗證
+                      <ShieldCheck className="w-4 h-4 text-emerald-400 dark:text-emerald-600" />
+                      <span>執行 NIST / R 統計基準驗證</span>
                     </button>
                   </div>
                 </div>

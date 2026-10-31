@@ -184,7 +184,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
             return (
               <div
                 key={tc.id}
-                className="bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-3 shadow-xs"
+                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-3 shadow-xs"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -218,7 +218,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                 </div>
 
                 {/* Benchmark Comparison Table */}
-                <div className="bg-white dark:bg-zinc-900 rounded-lg p-3 text-xs font-mono space-y-1.5 border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-zinc-50 dark:bg-zinc-950/80 rounded-lg p-3 text-xs font-mono space-y-1.5 border border-zinc-200 dark:border-zinc-800">
                   <div className="text-[11px] font-sans font-semibold text-zinc-500 dark:text-zinc-400">
                     數值比對 (Reference vs Computed):
                   </div>

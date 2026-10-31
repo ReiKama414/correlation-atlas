@@ -3,7 +3,6 @@ import {
   BookOpen,
   X,
   AlertTriangle,
-  Flame,
   ArrowRight,
   GitBranch,
   Search,
@@ -65,57 +64,57 @@ export const CausationGuideModal: React.FC<CausationGuideModalProps> = ({
           {/* 5 Key Pitfalls Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Pitfall 1: Confounder */}
-            <div className="bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-2">
-              <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold">
-                <GitBranch className="w-4 h-4" />
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-2">
+              <div className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-bold">
+                <GitBranch className="w-4 h-4 text-blue-500" />
                 <span>1. 共同潛在干擾因子 (Confounding Variable)</span>
               </div>
               <p className="text-xs text-zinc-700 dark:text-zinc-300">
                 <strong>現象：</strong>變數 X 與變數 Y 高度正相關，但其實 X 對 Y 毫無影響，而是第三變數 Z 同時作用於 X 與 Y。
               </p>
-              <div className="bg-white dark:bg-zinc-900 p-2.5 rounded text-[11px] text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 font-mono">
+              <div className="bg-zinc-50 dark:bg-zinc-950/80 p-2.5 rounded text-[11px] text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 font-mono">
                 💡 經典案例：冰淇淋銷量 (X) 與溺水死亡人數 (Y) 高度相關。真實原因：夏季高溫 (Z) 同時促使人們吃冰與戲水！
               </div>
             </div>
 
             {/* Pitfall 2: Reverse Causality */}
-            <div className="bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-2">
-              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold">
-                <ArrowRight className="w-4 h-4" />
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-2">
+              <div className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-bold">
+                <ArrowRight className="w-4 h-4 text-rose-500" />
                 <span>2. 逆向因果關係 (Reverse Causality)</span>
               </div>
               <p className="text-xs text-zinc-700 dark:text-zinc-300">
                 <strong>現象：</strong>研究者假設「X 導致 Y」，但事實上是「Y 導致 X」，或者兩者存在動態反饋迴路。
               </p>
-              <div className="bg-white dark:bg-zinc-900 p-2.5 rounded text-[11px] text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 font-mono">
+              <div className="bg-zinc-50 dark:bg-zinc-950/80 p-2.5 rounded text-[11px] text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 font-mono">
                 💡 案例：擁有高自尊心 (X) 的學生學業成績 (Y) 較佳。到底是自尊推高了成績，還是好成績建立了自尊？
               </div>
             </div>
 
             {/* Pitfall 3: Simpson's Paradox */}
-            <div className="bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-2">
-              <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold">
-                <Flame className="w-4 h-4" />
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-2">
+              <div className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-bold">
+                <AlertTriangle className="w-4 h-4 text-amber-500" />
                 <span>3. 辛普森悖論 (Simpson's Paradox)</span>
               </div>
               <p className="text-xs text-zinc-700 dark:text-zinc-300">
                 <strong>現象：</strong>在合併的總體資料中呈現正相關，但在每個子群組內部卻全為負相關（或反之）。忽視分組結構會得出致命的相反結論。
               </p>
-              <div className="bg-white dark:bg-zinc-900 p-2.5 rounded text-[11px] text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 font-mono">
+              <div className="bg-zinc-50 dark:bg-zinc-950/80 p-2.5 rounded text-[11px] text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 font-mono">
                 💡 本站範例：南蠻企鵝整體喙長與深度呈負相關，但 Adelie、Gentoo 與 Chinstrap 個別內部皆為正相關！
               </div>
             </div>
 
             {/* Pitfall 4: Selection & Berkson's Bias */}
-            <div className="bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-2">
-              <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold">
-                <Search className="w-4 h-4" />
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-2">
+              <div className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-bold">
+                <Search className="w-4 h-4 text-cyan-500" />
                 <span>4. 選擇性偏差與對撞因子 (Collider / Selection Bias)</span>
               </div>
               <p className="text-xs text-zinc-700 dark:text-zinc-300">
                 <strong>現象：</strong>當樣本的納入取決於兩個互不相關的特徵時，抽樣篩選本身會在樣本中硬生生製造出負相關（伯克森悖論 Berkson's bias）。
               </p>
-              <div className="bg-white dark:bg-zinc-900 p-2.5 rounded text-[11px] text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 font-mono">
+              <div className="bg-zinc-50 dark:bg-zinc-950/80 p-2.5 rounded text-[11px] text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 font-mono">
                 💡 案例：好萊塢演員「長相英俊」與「演技卓越」在明星群體中呈現負相關，只因不帥又不會演戲的人根本進不了好萊塢！
               </div>
             </div>

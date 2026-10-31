@@ -127,7 +127,7 @@ export const DatasetStorageModal: React.FC<DatasetStorageModalProps> = ({
         {/* Content */}
         <div className="p-4 overflow-y-auto space-y-5 text-xs">
           {/* Section 1: Save Current Analysis Snapshot */}
-          <div className="bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 space-y-2">
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 space-y-2">
             <div className="font-semibold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
               <Bookmark className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
               <span>儲存目前研究快照 (Save Snapshot)</span>
@@ -165,7 +165,7 @@ export const DatasetStorageModal: React.FC<DatasetStorageModalProps> = ({
                 {snapshots.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-lg"
+                    className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-lg"
                   >
                     <div>
                       <div className="font-semibold text-zinc-900 dark:text-zinc-100">{s.name}</div>
@@ -217,7 +217,7 @@ export const DatasetStorageModal: React.FC<DatasetStorageModalProps> = ({
                       className={`flex items-center justify-between p-2.5 rounded-lg border transition-colors ${
                         isActive
                           ? 'bg-zinc-100 dark:bg-zinc-800/80 border-zinc-400 dark:border-zinc-600'
-                          : 'bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800'
+                          : 'bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800'
                       }`}
                     >
                       <div>

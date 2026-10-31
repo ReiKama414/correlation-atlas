@@ -212,5 +212,37 @@ test.describe('ZERO-OVERLAP & LAYOUT INTEGRITY VERIFICATION', () => {
     await expect(page.locator('text=變數資料結構與描述統計總覽')).toBeVisible();
     await page.waitForTimeout(200);
     await page.screenshot({ path: 'test-results/screenshot-schema-1280-dark.png' });
+
+    // Test Verification Modal in 1280px Desktop Dark Mode (Image 2 verification)
+    const statsVerifyBtn = page.locator('button:has-text("統計驗證")').first();
+    await statsVerifyBtn.click();
+    await expect(page.locator('text=統計函式數值驗證套件')).toBeVisible();
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: 'test-results/screenshot-modal-verify-dark.png' });
+
+    // Click run all and verify passing colors
+    await page.click('button:has-text("立即執行驗證測試")');
+    await expect(page.locator('text=全部基準測試通過')).toBeVisible();
+    await page.screenshot({ path: 'test-results/screenshot-modal-verify-passed-dark.png' });
+
+    await page.locator('button[aria-label="關閉驗證視窗"]').click();
+
+    // Switch to Light Mode and Benchmark tab (Image 1 verification)
+    const lightBtn = page.locator('button[aria-label="切換為淺色模式"]').first();
+    if (await lightBtn.isVisible()) {
+      await lightBtn.click();
+      await page.waitForTimeout(200);
+    }
+    await page.click('button:has-text("基準測試")');
+    await expect(page.locator('text=數值基準檢驗套件')).toBeVisible();
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: 'test-results/screenshot-benchmark-1280-light.png' });
+
+    // Also open verification modal in Light Mode to verify light mode colors
+    await page.click('button:has-text("開啟驗證視窗")');
+    await expect(page.locator('text=統計函式數值驗證套件')).toBeVisible();
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: 'test-results/screenshot-modal-verify-light.png' });
+    await page.locator('button[aria-label="關閉驗證視窗"]').click();
   });
 });
